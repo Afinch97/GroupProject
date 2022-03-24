@@ -1,0 +1,103 @@
+@import url(https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css);
+body {
+    margin: 0;
+    background-color: #cccaca;
+    font-family: 'Courier New', monospace;
+    box-sizing: border-box;
+    min-height: 100%;
+    height: auto;
+}
+
+button,
+text,
+input,
+select {
+    font-family: 'Courier New', monospace;
+}
+
+.topnav {
+    overflow: hidden;
+    background-color: #e9e9e9;
+}
+
+.topnav a {
+    float: left;
+    color: black;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+}
+
+
+.topnav a:hover {
+    background-color: #ddd;
+    color: black;
+}
+
+.topnav a.active {
+    background-color: #2196F3;
+    color: white;
+}
+
+.topnav .search-container {
+    float: right;
+
+}
+
+
+.topnav input[type=text] {
+    padding: 6px;
+    margin-top: 8px;
+    font-size: 17px;
+    border: none;
+}
+
+.topnav .search-container button {
+    padding: 6px 10px;
+    margin-top: 8px;
+    margin-right: 16px;
+    background: #ddd;
+    font-size: 17px;
+    border: none;
+    cursor: pointer;
+}
+
+.topnav .search-container button:hover {
+    background: #ccc;
+}
+.topnav a.Logout {
+    float:right;
+    background-color: #ff7626;
+}
+.movieinfo {
+    display: flex;
+    padding: 2em;
+}
+
+.movieinfo .poster {
+    display: block;
+    min-width: 300px;
+    width: 300px;
+    height: 450px;
+    position: relative;
+    padding-left: 6em;
+}
+
+.movieinfo .details {
+    padding: 1rem;
+    padding-left: 4em;
+}
+.reviews {
+    padding: 20px;
+    padding-left: 6em;
+}
+.details .title{
+    font-weight: 700;
+    font-size: 1.1rem;
+    display:inline;
+
+}
+form {
+    margin: 0;
+  }

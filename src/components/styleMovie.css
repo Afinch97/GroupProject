@@ -1,0 +1,31 @@
+.movieinfo {
+    display: flex;
+    padding: 2em;
+}
+
+.movieinfo .poster {
+    display: block;
+    min-width: 300px;
+    width: 300px;
+    height: 450px;
+    position: relative;
+    padding-left: 6em;
+}
+
+.movieinfo .details {
+    padding: 1rem;
+    padding-left: 4em;
+}
+.reviews {
+    padding: 20px;
+    padding-left: 6em;
+}
+.details .title{
+    font-weight: 700;
+    font-size: 1.1rem;
+    display:inline;
+
+}
+form {
+    margin: 0;
+  }

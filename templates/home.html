@@ -1,0 +1,46 @@
+<html>
+  <head>
+    <link rel="stylesheet" href={{ url_for( 'static', filename='style.css' ) }}
+    />
+  </head>
+  <body>
+    <h1><center>Welcome</center></h1>
+    <center>
+      {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <div class="notification is-danger">
+             {{ messages[0] }}
+            </div>
+            {% endif %}
+        {% endwith %}
+      <center>
+        <div class="login">
+          <form method="POST" action="/login">
+            <input type="text" name="name" placeholder="Username or Email">
+            <input type="password" name="password" placeholder="Password">
+            <button>Log In</button>
+            <label class="checkbox">
+                <input type="checkbox" name="remember">
+                Remember me
+            </label>
+        </form>
+        </div>
+        <p>Don't have an account?</p>
+        <p><a href=signup><button>Sign Up</button></a></p>
+      </center>
+    </center>
+    <!-- <center>
+        <div class='item'>
+                <form>
+                    <button type="button">Search By Genre</button>
+                    <select id="genres" name="genres">
+                        {%for i in genres%}
+                        <option value="{{i}}">{{i}}</option>
+                        {%endfor%}
+                    </select>
+                    <input type="submit">
+                </form>
+        </div>
+     </center>  -->
+  </body>
+</html>

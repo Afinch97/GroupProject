@@ -1,0 +1,87 @@
+@import url(https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css);
+body {
+    background-color: #cccaca;
+    font-family: 'Courier New', monospace;
+}
+
+button,
+text,
+input,
+select {
+    font-family: 'Courier New', monospace;
+}
+
+.container {
+    display: grid;
+    grid-template-columns: 2fr 2fr 2fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr;
+    gap: 15px 10px;
+}
+
+.item {
+    padding: 4px;
+}
+
+img {
+    display: flex;
+    align-items: center;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+.topnav {
+    overflow: hidden;
+}
+
+.topnav a {
+    float: left;
+    display: block;
+    color: black;
+    text-align: center;
+}
+
+.topnav a:hover {
+    background-color: #ddd;
+    color: black;
+}
+
+.topnav a.active {
+    background-color: #2196f3;
+    color: white
+}
+
+.topnav .search-container {
+    float: right;
+}
+
+.topnav input[type=text] {
+    padding: 6px;
+    margin-top: 8px;
+    font-size: 17px;
+    border: none;
+}
+
+.topnav .search-container button {
+    float: right;
+    padding: 6px 10px;
+    margin-top: 8px;
+    margin-right: 16px;
+    background: #ddd;
+    font-size: 17px;
+    border: none;
+    cursor: pointer;
+}
+form {
+    margin: 0;
+  }
+
+.topnav .search-container button:hover {
+    background: #ccc;
+}
+
+.login {
+    display: flex;
+    flex-direction: column;
+}

@@ -1,0 +1,36 @@
+<html>
+<head>
+    <link rel="stylesheet" href={{ url_for( 'static', filename='searchstyle.css' ) }} />
+</head>
+<body>
+    <div class="topnav" id="myTopNav">
+        <a class="active" href="/search">Home</a>
+        <a href="https://github.com/Afinch97/project1-afinch6">About</a>
+        <a href="/favorites">Favorites</a>
+        <div class="search-container">
+            <form method="POST" action="/search">
+                <input type="text" placeholder="Search..." name="search">
+                <button type="submit"><i class="fa fa-search"></i></button>
+            </form>
+        </div>
+        <a href="/logout" class="Logout">Logout</a>
+    </div>
+    <h1>{{title}} Movies</h1>
+    <div class='container'>
+        {% for i in range(10) %}
+        <div class='item'>
+            <p><h2>({{i+1}}) {{titles[i] }}</h2>
+                <form action="/movie/{{ids[i]}}">
+                    <input type="submit" value="More info"/>
+                </form>
+            </p>
+            <img src="{{posters[i]}}" >
+            <p>{{ taglines[i] }}</p>
+            <form action="/add/{{ids[i]}}">
+                <input type="submit" value="Add to Favorites"/>
+            </form>
+        </div>
+        {%endfor%}
+    </div>
+</body>
+</html>

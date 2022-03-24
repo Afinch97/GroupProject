@@ -1,0 +1,39 @@
+<html>
+<head>
+    <link rel="stylesheet" href={{ url_for( 'static', filename='searchstyle.css' ) }} />
+</head>
+<body>
+    <div class="topnav" id="myTopNav">
+        <a class="active" href="/search">Home</a>
+        <a href="https://github.com/Afinch97/project1-afinch6">About</a>
+        <div class="search-container">
+            <form method="POST" action="/search">
+                <input type="text" placeholder="Search..." name="search">
+                <button type="submit"><i class="fa fa-search"></i></button>
+            </form>
+        </div>
+        <a href="/logout" class="Logout">Logout</a>
+    </div>
+    {% if fav_titles %}
+        <h1>Favorite Movies</h1>
+        <div class='container'>
+            {% for i in range(fav_length) %}
+            <div class='item'>
+                <p><h2>({{i+1}}) {{fav_titles[i] }}</h2>
+                    <form action="/movie/{{fav_ids[i]}}">
+                        <input type="submit" value="More info"/>
+                    </form>
+                </p>
+                <img src="{{fav_posters[i]}}" >
+                <p>{{fav_taglines[i] }}</p>
+                <form action="/remove/{{fav_ids[i]}}">
+                    <input type="submit" value="Remove from Favorites"/>
+                </form>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <h1>No Favorites</h1><br>
+    {% endif %}
+</body>
+</html>

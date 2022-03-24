@@ -1,0 +1,8 @@
+-Used double quotes instead of single for fetch and wasn't getting response took a very long time to realize that was the issue
+-overall fetch is the greatest issue so far
+-At one point it stopped rendering becasue root was in single quotes
+-conflicting urls with the router
+-I really can't return the numbers from query becasue it returns as a class instead of just the numbers that they are
+    - So to fix this I had to convert the "object" to a string and then convert that into int. Dumb as hell. Literally (int(str(favs[i]))) fixed it
+
+-Couldn't get rid of the navbar oh well...

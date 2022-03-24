@@ -1,0 +1,23 @@
+<html>
+    <head></head>
+    <body>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <div class="notification is-danger">
+             {{ messages[0] }}. Go to <a href="{{ url_for('login') }}">login page</a>.
+            </div>
+            {% endif %}
+        {% endwith %}
+        <div>
+            <h3>Sign Up</h3>
+            <div>
+                <form method="POST" action="/signup">
+                    <input type="email" name="email" placeholder="Email">
+                    <input type="text" name="name" placeholder="Username">
+                    <input type="password" name="password" placeholder="Password">
+                    <button>Sign Up</button>
+                </form>
+            </div>
+        </div>
+    </body>
+</html>

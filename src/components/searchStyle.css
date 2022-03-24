@@ -1,0 +1,52 @@
+* {box-sizing: border-box;}
+
+body {
+  margin: 0;
+  background-color: #cccaca;
+  font-family: 'Courier New', monospace;
+}
+button,text,input, select {
+  font-family: 'Courier New', monospace;
+
+}
+.container {
+  display: grid;
+  grid-template-columns: 2fr 2fr 2fr;
+  grid-template-rows: 1fr 1fr 1fr 1fr;
+  gap: 15px 10px;
+}
+
+.item {
+  padding: 4px;
+}
+.movieinfo {
+  display: flex;
+  padding: 2em;
+}
+
+.movieinfo .poster {
+  display: block;
+  min-width: 300px;
+  width: 300px;
+  height: 450px;
+  position: relative;
+  padding-left: 6em;
+}
+
+.movieinfo .details {
+  padding: 1rem;
+  padding-left: 4em;
+}
+.reviews {
+  padding: 20px;
+  padding-left: 6em;
+}
+.details .title{
+  font-weight: 700;
+  font-size: 1.1rem;
+  display:inline;
+
+}
+form {
+  margin: 0;
+}

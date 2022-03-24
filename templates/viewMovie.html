@@ -1,0 +1,58 @@
+<html>
+<head>
+   <link rel="stylesheet" href={{ url_for( 'static', filename='viewstyle.css' ) }} />
+</head>
+<body>
+    <div class="topnav">
+        <a class="active" href="/search">Home</a>
+        <a href="https://github.com/Afinch97/project1-afinch6">About</a>
+        <a href="/favorites">Favorites</a>
+        <div class="search-container">
+            <form method="POST" action="/">
+                <input type="text" placeholder="Search..." name="search">
+                <button type="submit"><i class="fa fa-search"></i></button>
+            </form>
+        </div>
+        <a href="/logout" class="Logout">Logout</a>
+    </div>
+    <h2>{{title}}</h2>
+    <form action="/add/{{id}}">
+        <input type="submit" value="Add to Favorites"/>
+    </form>
+    <div class="movieInfo">
+        <div class="poster">
+            <img src="{{poster}}" >
+        </div>
+        <div class="details">
+            <div class="title">{{title}}</div> {{release_date}}<br>
+            {{tagline}}<br>
+            {{genres}}<br><br>
+            {{overview}}<br>
+        </div>
+    </div>
+    <div class="reviews">
+        {% if reviews%}
+            <h2>Reviews:</h2>
+            {% for i in range(rev_length) %}
+                <div class="name_and_rating">
+                    <h3>{{user[i]}}: {{rating[i]}}</h3>
+                </div>
+                <div class="review_text">
+                    {{text[i]}}
+                </div>
+                <br>
+            {%endfor%}
+            <form method="POST" action="/movie/{{id}}" class="reviewbox">
+            <h2>Write A Review:</h2>
+        {%else%}
+            <form method="POST" action="/movie/{{id}}" class="reviewbox">  
+            <h2>Be The First To Review:</h2>
+        {%endif%}
+            <label for="rating">Rate the movie out of 10: </label><input type="number" name="rating" min="0" max="10"><br>
+            <label for="text">Review: </label><input type="text" name="textReview" size="60"><br>
+            <button type="submit">Submit Review</button>
+        </form>
+
+    </div>
+</body>
+</html>

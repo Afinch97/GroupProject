@@ -1,0 +1,23 @@
+@import url(https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css);
+
+* {box-sizing: border-box;}
+
+body {
+  margin: 0;
+  background-color: #cccaca;
+  font-family: 'Courier New', monospace;
+}
+button,text,input, select {
+  font-family: 'Courier New', monospace;
+
+}
+.container {
+  display: grid;
+  grid-template-columns: 2fr 2fr 2fr;
+  grid-template-rows: 1fr 1fr 1fr 1fr;
+  gap: 15px 10px;
+}
+
+.item {
+  padding: 4px;
+}
