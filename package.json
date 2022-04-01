@@ -13,10 +13,11 @@
     "react-router-dom": "^6.2.2",
     "react-scripts": "^4.0.3",
     "web-vitals": "^2.1.4",
-    "zx": "^6.0.7"
+    "zx": "^5.2.0"
   },
   "scripts": {
     "start": "node run.mjs",
+    "start2": "zx run.mjs",
     "build": "node run.mjs --prod",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -43,10 +44,10 @@
   "devDependencies": {
     "parcel": "^2.4.1"
   },
-  "source": "react/index.js",
+  "source": "src/index.js",
   "targets": {
-  "default": {
-    "distDir": "./static/react"
+    "default": {
+      "distDir": "./static/react"
+    }
   }
-}
 }

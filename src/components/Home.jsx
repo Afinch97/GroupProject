@@ -28,7 +28,7 @@ const Home = ()=>{
             <>
             <div className="error"><p>{error}</p></div>
             <form  onSubmit={Submit}>
-                <label htmlFor="user">Name: </label>
+                <label htmlFor="user">Name--: </label>
                 <input type="text" name="user" id="user" onChange={e =>setUser({...user, username: e.target.value})} value={user.username}/>
 
                 <label htmlFor="user">Password: </label>

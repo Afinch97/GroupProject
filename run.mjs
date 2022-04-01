@@ -24,6 +24,6 @@ if (argv.prod) {
   // zx returns the result of $ commands as promises
   await Promise.all([
     $`npx parcel watch`,
-    $`flask run`,
+    $`flask run -p 8080`,
   ]);
 }
