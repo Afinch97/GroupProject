@@ -46,7 +46,7 @@
     "eslint-plugin-react-hooks": "^4.4.0",
     "parcel": "^2.4.1"
   },
-  "source": "src/index.js",
+  "source": "src/index.jsx",
   "targets": {
     "default": {
       "distDir": "./static/react"

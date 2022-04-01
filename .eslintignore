@@ -7,3 +7,4 @@ static/
 reportWebVitals.js
 **/*.test.js
 **/*.Tests.js
+run.mjs
