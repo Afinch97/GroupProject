@@ -1,0 +1,9 @@
+node_modules/
+templates/
+public/
+backend/
+.git/
+static/
+reportWebVitals.js
+**/*.test.js
+**/*.Tests.js

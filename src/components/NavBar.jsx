@@ -1,34 +1,34 @@
 import React, { useState } from 'react';
-import "./NavBar.css"
+import './NavBar.css';
 import { NavLink, useNavigate, Link } from 'react-router-dom';
 
-const NavBar = () => {
-  const [term, setTerm] = useState("")
-  let navigate = useNavigate();
-  const logout = () =>{
-    fetch('/logout')
+function NavBar() {
+  const [term, setTerm] = useState('');
+  const navigate = useNavigate();
+  const logout = () => {
+    fetch('/logout');
     window.location = '/';
-  }
-  const Submit = (e)  => {
+  };
+  const Submit = (e) => {
     e.preventDefault();
-    //navigate(`/searchy/${term}`)
+    // navigate(`/searchy/${term}`)
     window.location = `/searchy/${term}`;
-}
+  };
   return (
-    <div class="topnav" id="myTopNav">
-        <NavLink to={"/searchy"} ><a>Home</a></NavLink>
-        <a href="https://github.com/Afinch97/Milestone-3-SE" target="_blank">About</a>
-        <NavLink to={"/favs"}><a>Favorites</a></NavLink>
-        <NavLink to={"/myComments"}><a>Comments</a></NavLink>
-        <div class="search-container">
-            <form onSubmit={Submit}>
-                <input type="text" placeholder="Search..." name="search"onChange={e =>setTerm(e.target.value)} value={term}></input>
-                <button type="submit"><i class="fa fa-search"></i></button>
-            </form>
-        </div>
-        <a onClick={logout} class="Logout">Logout</a>
+    <div className="topnav" id="myTopNav">
+      <NavLink to="/searchy"><a>Home</a></NavLink>
+      <a href="https://github.com/Afinch97/Milestone-3-SE" target="_blank" rel="noreferrer">About</a>
+      <NavLink to="/favs"><a>Favorites</a></NavLink>
+      <NavLink to="/myComments"><a>Comments</a></NavLink>
+      <div className="search-container">
+        <form onSubmit={Submit}>
+          <input type="text" placeholder="Search..." name="search" onChange={(e) => setTerm(e.target.value)} value={term} />
+          <button type="submit"><i className="fa fa-search" /></button>
+        </form>
+      </div>
+      <a onClick={logout} className="Logout">Logout</a>
     </div>
-  )
+  );
 }
 
-export default NavBar
+export default NavBar;
