@@ -3,11 +3,14 @@ import {Navigate} from "react-router-dom";
 import {Link, useNavigate} from "react-router-dom";
 import '../../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import "./homeStyle.css";
+import { validate } from 'email-validator';
 
 
 const Register = ()=>{
     const [user, setUser] = useState({username:"",email:"" ,password:""});
     const [error, setError] = useState("");
+    const [message, setMessage] = useState('');
+
     let navigate = useNavigate();
     const Submit = e => {
         e.preventDefault();
@@ -27,6 +30,24 @@ const Register = ()=>{
             });
     }
 
+    const set = name => {
+        return ({ target: { value } }) => {
+            setUser(oldValues => ({...oldValues, [name]: value }));
+        }
+      };
+
+      const emailValidation = () =>{
+        const regex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+        const email = set('email')
+        if(regex.test(email) === false){
+            {
+                setMessage( "Email is not valid")
+            };
+            return false;
+        }
+        return true;
+    }
+
         return (
             <div className="inner">
             <form onSubmit={Submit}>
@@ -34,15 +55,16 @@ const Register = ()=>{
             {error && <p style={{ color: "red" }}>{error}</p>}
             <div className="form-group">
                 <label htmlFor="user">Username: </label>
-                <input type="text" className="form-control" id="user" placeholder="Username" onChange={e =>setUser({...user, username: e.target.value})} value={user.username}/>
+                <input type="text" className="form-control" id="user" placeholder="Username" onChange={set('username')} value={user.username}/>
             </div>
             <div className="form-group">
                 <label htmlFor="user">Email: </label>
-                <input type="text" className="form-control" id="email" placeholder="Email" onChange={e =>setUser({...user, email: e.target.value})} value={user.email}/>
+                <input type="text" className="form-control" id="email" placeholder="Email" onChange={emailValidation} value={user.email} />
+                {message}
             </div>
             <div className="form-group">
                 <label htmlFor="user">Password: </label>
-                <input type="password" className="form-control" placeholder="Password"  id="password" onChange={e =>setUser({...user, password: e.target.value})} value={user.password} />  
+                <input type="password" className="form-control" placeholder="Password"  id="password" onChange={set('password')} value={user.password} />  
             </div>
             <button type="submit" className="btn btn-primary btn-block">Sign Up</button>
             </form>
