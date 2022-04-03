@@ -3,7 +3,6 @@ import {Navigate} from "react-router-dom";
 import {Link, useNavigate} from "react-router-dom";
 import '../../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import "./homeStyle.css";
-import { validate } from 'email-validator';
 
 
 const Register = ()=>{
@@ -14,20 +13,26 @@ const Register = ()=>{
     let navigate = useNavigate();
     const Submit = e => {
         e.preventDefault();
-        console.log(JSON.stringify(user))
-        fetch('/register', { method: 'POST', headers:{'Content-Type':'application/json'} ,body: JSON.stringify(user) })
-            .then(res => res.json())
-            .then(json => {
-                 console.log(json)
-                var key = Object.keys(json)
-                console.log(key[0])
-                if(key[0]==="success"){
-                    navigate("/");
-                }
-                else if(key[0]==="error"){
-                    setError(Object.values(json))
-                }
-            });
+
+        if (emailValidation(user.email)) {
+            console.log(JSON.stringify(user))
+            fetch('/register', { method: 'POST', headers:{'Content-Type':'application/json'} ,body: JSON.stringify(user) })
+                .then(res => res.json())
+                .then(json => {
+                    console.log(json)
+                    var key = Object.keys(json)
+                    console.log(key[0])
+                    if(key[0]==="success"){
+                        navigate("/");
+                    }
+                    else if(key[0]==="error"){
+                        setError(Object.values(json))
+                    }
+                });
+        } else {
+            console.log("email invalid");
+        }
+
     }
 
     const set = name => {
@@ -36,10 +41,9 @@ const Register = ()=>{
         }
       };
 
-      const emailValidation = () =>{
+      const emailValidation = (event) =>{
         const regex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
-        const email = set('email')
-        if(regex.test(email) === false){
+        if(regex.test(event) === false){
             {
                 setMessage( "Email is not valid")
             };
@@ -59,7 +63,7 @@ const Register = ()=>{
             </div>
             <div className="form-group">
                 <label htmlFor="user">Email: </label>
-                <input type="text" className="form-control" id="email" placeholder="Email" onChange={emailValidation} value={user.email} />
+                <input type="text" className="form-control" id="email" placeholder="Email" onChange={set('email')} value={user.email} />
                 {message}
             </div>
             <div className="form-group">
