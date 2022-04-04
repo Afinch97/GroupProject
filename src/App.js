@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import { Home, Register, Search, SearchResult, Movie, NavBar, Favorites, Comments}from './components';
+import { Home, Register, Search, SearchResult, Movie, NavBar, Favorites, Comments, SearchMovie}from './components';
 
 const App = () => {
  
@@ -9,6 +9,7 @@ const App = () => {
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/search-movie" element={<SearchMovie />} />
         <Route path="/register" element={<Register />} />
         <Route path="/searchy" element={<><NavBar /> <Search /></>} />
         <Route path="/searchy/:query" element={<><NavBar /><SearchResult /></>} />

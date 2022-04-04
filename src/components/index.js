@@ -7,4 +7,5 @@ export { default as NavBar } from "./NavBar";
 export { default as Favorites } from "./Favorites";
 export { default as SearchResult } from "./SearchResult";
 export { default as Comments } from "./Comments";
+export { default as SearchMovie } from "./SearchMovie";
 

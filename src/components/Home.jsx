@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 
 const Home = ()=>{
     const [user, setUser] = useState({username:"", password:"", remember:false});
@@ -40,6 +40,7 @@ const Home = ()=>{
                 </label>
                 <input type="submit" name="Sign Up" />
             </form>
+            <Link to='/search-movie'>Search Movie Here</Link>
             </>
         )
 
