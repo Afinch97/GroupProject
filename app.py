@@ -393,6 +393,10 @@ app.register_blueprint(api)
 
 @app.errorhandler(404)
 def catch_all_route(_):
+    """
+    Catch all routes that don't match any of the above templates
+    Return a react app for these routes.
+    """
     return render_template("index.html")
 
 
