@@ -22,7 +22,7 @@ function Movie() {
   const [current_user, setCurrent_user] = useState('');
 
   const getRepo = async () => {
-    await fetch(`/movie/${movieId}`)
+    await fetch(`/api/movie/${movieId}`)
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
@@ -95,7 +95,7 @@ function Movie() {
         <br />
       </>,
     );
-    fetch(`/movie/${movieId}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(inputs) });
+    fetch(`/api/movie/${movieId}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(inputs) });
   };
 
   return (

@@ -7,7 +7,7 @@ function About() {
   const submit = (e) => {
     e.preventDefault();
     console.log(JSON.stringify(user));
-    fetch('/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(user) })
+    fetch('/api/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(user) })
       .then((res) => res.json())
       .then((json) => {
         console.log(json);

@@ -6,7 +6,7 @@ function NavBar() {
   const [term, setTerm] = useState('');
   const navigate = useNavigate();
   const logout = () => {
-    fetch('/logout');
+    fetch('/api/logout');
     window.location = '/';
   };
   const Submit = (e) => {
