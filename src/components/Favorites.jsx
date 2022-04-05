@@ -35,7 +35,7 @@ function Favorites() {
   }
   const Delete = (na) => {
     console.log(na);
-    fetch(`/remove/${na}`);
+    fetch(`/api/remove/${na}`);
   };
 
   for (let i = 0; i < length; i++) {

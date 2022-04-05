@@ -1,3 +1,4 @@
+# pylint: disable=no-member
 import os
 import re
 from multiprocessing import synchronize
@@ -261,19 +262,19 @@ def viewMovie(id):
     }
     return jsonify(viewMovie_dict)
 
-@bp.route('/add/<int:movie_id>', methods=["POST","GET"])
+@api.route('/add/<int:movie_id>', methods=["POST","GET"])
 @login_required
 def addMovie(movie_id: int):
     current_user.add_favorite_movie(movie_id)
     return jsonify("Movie is added")
 
-@bp.route('/remove/<int:movie_id>', methods=["POST","GET"])
+@api.route('/remove/<int:movie_id>', methods=["POST","GET"])
 @login_required
 def removeMovie(movie_id: int):
     current_user.remove_favorite_movie(movie_id)
     return jsonify("Removed from Favorites")
 
-# @bp.route('/reviewbbgurl', methods=["GET"])
+# @api.route('/reviewbbgurl', methods=["GET"])
 # @login_required
 # def gimme_my_reviews():
 #     name = current_user.name
