@@ -73,6 +73,7 @@ class Favorites(db.Model):
     def __repr__(self):
         return repr(int(self.movie))
 
+db.create_all()
 
 @login_manager.user_loader
 def load_user(user_id):
