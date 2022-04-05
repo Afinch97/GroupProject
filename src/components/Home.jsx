@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 function Home() {
   const [user, setUser] = useState({ username: '', password: '', remember: false });
@@ -38,6 +38,7 @@ function Home() {
           Remember me
         </label>
         <input type="submit" name="Sign Up" />
+        <Link to="/register">Register</Link>
       </form>
     </>
   );
