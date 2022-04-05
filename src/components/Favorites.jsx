@@ -15,7 +15,7 @@ function Favorites() {
   const items = [];
   const getRepo = async () => {
     console.log('fetching');
-    await fetch('/favorites')
+    await fetch('/api/favorites')
       .then((response) => response.json())
       .then((data) => {
         console.log(data);

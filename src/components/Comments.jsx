@@ -6,7 +6,7 @@ function Comments() {
   console.log(commentInfo);
   const items = [];
   const MyComments = () => {
-    fetch('/reviewbbgurl')
+    fetch('/api/reviewbbgurl')
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
@@ -31,7 +31,7 @@ function Comments() {
     }
     console.log('After\n', commentInfo);
     console.log(items);
-    fetch(`/delete_comment/${e}`);
+    fetch(`/api/delete_comment/${e}`);
   };
   console.log('After\n', commentInfo);
   for (let i = 0; i < commentInfo.length; i++) {

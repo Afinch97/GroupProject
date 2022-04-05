@@ -10,7 +10,7 @@ function Search() {
   const [titles, setTitles] = useState([]);
   const items = [];
   const getRepo = async () => {
-    await fetch('/search')
+    await fetch('/api/search')
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
@@ -26,7 +26,7 @@ function Search() {
   console.log(title, ids, titles, posters, taglines);
   const Add = (e) => {
     e.preventDefault();
-    fetch(`/add/${e}`);
+    fetch(`/api/add/${e}`);
   };
 
   for (let i = 0; i < 10; i++) {
