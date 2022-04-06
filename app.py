@@ -148,7 +148,6 @@ def search():
     posters = movies["posters"]
     ids = movies["ids"]
     taglines = movies["taglines"]
-
     wikiLinks = []
     for i in range(len(titles)):
         links = MediaWiki.get_wiki_link(titles[i])
@@ -178,7 +177,7 @@ def searchResult(query: str):
     data = get_genres()
     title = query
     movies = movie_search(query)
-
+    print("hello")
     titles = movies["titles"]
     overviews = movies["overviews"]
     posters = movies["posters"]
@@ -211,7 +210,13 @@ def searchResult(query: str):
 @api.route("/movie/<id>", methods=["POST", "GET"])
 @login_required
 def viewMovie(id):
+    print("hello")
+    print(id)
     (title, genres, poster, tagline, overview, release_date, lil_poster) = movie_info(id)
+
+    print(title)
+    print("hello")
+    print(movie_info(id))
     # if request.method == "POST":
     #     data = request.get_json()
     #     rating = data["rating"]
@@ -223,7 +228,7 @@ def viewMovie(id):
 
     # reviews = Reviews.query.filter_by(movie_id=id).all()
     reviews = []
-    
+    print(id)
     if reviews:
         users = []
         ratings = []
@@ -234,7 +239,7 @@ def viewMovie(id):
             ratings.append(i.__dict__.get("rating"))
             texts.append(i.__dict__.get("text"))
         viewMovie_dict = {
-            "current_user": current_user.name,
+            "current_user": current_user,
             "title": title,
             "genres": genres,
             "poster": poster,
@@ -250,7 +255,7 @@ def viewMovie(id):
         }
         return jsonify(viewMovie_dict)
     viewMovie_dict = {
-        "current_user": current_user.name,
+        "current_user": current_user,
         "title": title,
         "genres": genres,
         "poster": poster,
@@ -265,6 +270,7 @@ def viewMovie(id):
 @api.route('/add/<int:movie_id>', methods=["POST","GET"])
 @login_required
 def addMovie(movie_id: int):
+    print("hello")
     current_user.add_favorite_movie(movie_id)
     return jsonify("Movie is added")
 
