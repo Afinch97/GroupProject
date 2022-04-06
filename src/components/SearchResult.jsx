@@ -31,6 +31,7 @@ function SearchResult() {
     fetch(`/add/${item}`);
   };
 
+<<<<<<< Updated upstream
   for (let i = 0; i < 10; i++) {
     items.push(
       <div className="item">
@@ -61,6 +62,38 @@ function SearchResult() {
       </div>
     </>
   );
+=======
+            });        
+    };
+    useEffect(() => getRepo(), []);
+    console.log(title, ids, titles, posters, taglines)
+    const Add = (e) =>{
+        e.preventDefault();
+        fetch(`/add/${e}`)
+    }
+
+    for (let i = 0; i < 10; i++) {
+        items.push(
+            <div class='item'>
+                <p><h2>({i+1}) {titles[i] }</h2>
+                <Link to={`/info/${ids[i]}`}><input type="submit" value="More info"/></Link>
+                </p>
+                <img src={String(posters[i])} />
+                <p>{ taglines[i] }</p>
+                <button onClick={() => Add(ids[i])}>Add to Favorites</button>
+            </div>
+        )
+
+    }
+     return (
+        <div>
+        <h1>{title} Movies</h1>
+        <div class='container'>
+            {items}
+        </div>
+        </div>
+    )
+>>>>>>> Stashed changes
 }
 
 export default SearchResult;
