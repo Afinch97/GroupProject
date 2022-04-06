@@ -24,7 +24,7 @@ load_dotenv(find_dotenv())
 def create_app():
     flask_app = Flask(__name__)
     flask_app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0
-    flask_app.config["SECRET_KEY"] = os.getenv('SECRET_KEY',"secret-key-goes-here")
+    flask_app.config["SECRET_KEY"] = os.getenv('SECRET_KEY', "secret-key-goes-here")
     flask_app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
     if flask_app.config["SQLALCHEMY_DATABASE_URI"].startswith("postgres://"):
         flask_app.config["SQLALCHEMY_DATABASE_URI"] = flask_app.config[
@@ -70,9 +70,6 @@ def login():
     username = data["username"]
     password = data["password"]
     remember = data["remember"]
-
-    
-    
     user = User.query.get(username)
     if not user:
         return jsonify({"error":"User does not exist, please create new account."})
@@ -213,8 +210,7 @@ def viewMovie(id):
     print("hello")
     print(id)
     (title, genres, poster, tagline, overview, release_date, lil_poster) = movie_info(id)
-
-    print(title)
+    print(current_user)
     print("hello")
     print(movie_info(id))
     # if request.method == "POST":
@@ -267,14 +263,14 @@ def viewMovie(id):
     }
     return jsonify(viewMovie_dict)
 
-@api.route('/add/<int:movie_id>', methods=["POST","GET"])
+@api.route('/add/<int:movie_id>', methods=["POST", "GET"])
 @login_required
 def addMovie(movie_id: int):
     print("hello")
     current_user.add_favorite_movie(movie_id)
     return jsonify("Movie is added")
 
-@api.route('/remove/<int:movie_id>', methods=["POST","GET"])
+@api.route('/remove/<int:movie_id>', methods=["POST", "GET"])
 @login_required
 def removeMovie(movie_id: int):
     current_user.remove_favorite_movie(movie_id)

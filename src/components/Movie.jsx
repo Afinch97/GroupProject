@@ -20,7 +20,6 @@ function Movie() {
   const [startForm, setStartForm] = useState('Be the first to write a review:');
   const [inputs, setInputs] = useState({});
   const [current_user, setCurrent_user] = useState('');
-
   const getRepo = async () => {
     await fetch(`/api/movie/${movieId}`)
       .then((response) => response.json())
