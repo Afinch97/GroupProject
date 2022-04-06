@@ -131,7 +131,7 @@ def get_favorites(favs):
     ids =[]
     taglines=[]
     for i in range(len(favs)):
-        INFO_URL = 'https://api.themoviedb.org/3/movie/'+str(favs[i])+'?api_key='+str(os.getenv('TMDB_KEY'))+'&language=en-US'
+        INFO_URL = 'https://api.themoviedb.org/3/movie/'+str(favs[i].id)+'?api_key='+str(os.getenv('TMDB_KEY'))+'&language=en-US'
         info = requests.get(INFO_URL)
         data = info.json()
         title = data['title']

@@ -1,82 +1,52 @@
-from flask import (
-    Flask,
-    Blueprint,
-    render_template,
-    redirect,
-    url_for,
-    request,
-    flash,
-    jsonify,
-)
-from flask_login import (
-    UserMixin,
-    LoginManager,
-    login_user,
-    login_required,
-    current_user,
-    logout_user,
-)
-from sqlalchemy import false, over, table, select, true
-from tmdb import get_trending, get_genres, movie_search, movie_info, get_favorites
-from werkzeug.security import generate_password_hash, check_password_hash
-from sqlalchemy import over, table, select, update
-from dotenv import find_dotenv, load_dotenv
-from flask_sqlalchemy import SQLAlchemy
-from multiprocessing import synchronize
-import requests
-import MediaWiki
-import sqlalchemy
+# pylint: disable=no-member
 import os
 import re
+from multiprocessing import synchronize
+
+import requests
+import sqlalchemy
+from dotenv import find_dotenv, load_dotenv
+from flask import (Blueprint, Flask, flash, jsonify, redirect, render_template,
+                   request, url_for)
+from flask_login import (LoginManager, UserMixin, current_user, login_required,
+                         login_user, logout_user)
+from flask_sqlalchemy import SQLAlchemy
+from werkzeug.security import check_password_hash, generate_password_hash
+
+import MediaWiki
+from database import db, setup_database
+from models import User, Movie, Genre
+from tmdb import (get_favorites, get_genres, get_trending, movie_info,
+                  movie_search)
 
 load_dotenv(find_dotenv())
 
-app = Flask(__name__)
-app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0
-app.config["SECRET_KEY"] = "secret-key-goes-here"
-app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
-if app.config["SQLALCHEMY_DATABASE_URI"].startswith("postgres://"):
-    app.config["SQLALCHEMY_DATABASE_URI"] = app.config[
-        "SQLALCHEMY_DATABASE_URI"
-    ].replace("postgres://", "postgresql://")
-db = SQLAlchemy(app, session_options={"autocommit": True})
-db.init_app(app)
+def create_app():
+    flask_app = Flask(__name__)
+    flask_app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0
+    flask_app.config["SECRET_KEY"] = os.getenv('SECRET_KEY',"secret-key-goes-here")
+    flask_app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
+    if flask_app.config["SQLALCHEMY_DATABASE_URI"].startswith("postgres://"):
+        flask_app.config["SQLALCHEMY_DATABASE_URI"] = flask_app.config[
+            "SQLALCHEMY_DATABASE_URI"
+        ].replace("postgres://", "postgresql://")
+    # Gets rid of a warning
+    flask_app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+    setup_database(flask_app)
+    # db = SQLAlchemy(flask_app, session_options={"autocommit": True})
+    return flask_app
+
+app = create_app()
+# db.init_app(app)
 
 login_manager = LoginManager()
 login_manager.login_view = "login"
 login_manager.init_app(app)
 
 
-class User(UserMixin, db.Model):
-    id = db.Column(
-        db.Integer, primary_key=True
-    )  # primary keys are required by SQLAlchemy
-    email = db.Column(db.String(100), unique=True)
-    password = db.Column(db.String(100))
-    name = db.Column(db.String(1000))
-
-
-class Reviews(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    movie_id = db.Column(db.Integer)
-    rating = db.Column(db.Integer)
-    user = db.Column(db.String(1000))
-    text = db.Column(db.String(1000))
-
-
-class Favorites(db.Model):
-    __tablename__ = "Favorites"
-    id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(100))
-    movie = db.Column(db.Integer)
-
-    def __repr__(self):
-        return repr(int(self.movie))
-
-
 @login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(int(user_id))
+def load_user(username):
+    return User.query.get(username)
 
 login_manager.login_view = 'api.login'
 
@@ -97,16 +67,16 @@ def login():
     data = request.get_json()
     print(data)
     email = data["username"]
-    name = data["username"]
+    username = data["username"]
     password = data["password"]
     remember = data["remember"]
 
-    user = User.query.filter_by(name=name).first()
+    
+    
+    user = User.query.get(username)
     if not user:
-        user = User.query.filter_by(email=email).first()
-        if not user:
-            return jsonify({"error": "User does not exist, please create new account."})
-    if not user or not check_password_hash(user.password, password):
+        return jsonify({"error":"User does not exist, please create new account."})
+    if not user.password_is_valid(password):
         flash("Username or Password Incorrect")
         return jsonify({"error": "Password is incorrect"})
     login_user(user, remember=remember)
@@ -122,13 +92,10 @@ def register():
 
     user = User.query.filter_by(email=email).first()
     if user:
-        return jsonify({"error": "User already exists"})
-    new_user = User(
-        email=email,
-        name=name,
-        password=generate_password_hash(password, method="sha256"),
-    )
-    db.session.begin()
+
+        return jsonify({"error":"User already exists"})    
+    new_user = User(email=email, username=name, password=generate_password_hash(password, method='sha256'))
+    # db.session.begin()
     db.session.add(new_user)
     db.session.commit()
 
@@ -138,7 +105,8 @@ def register():
 @api.route("/favorites", methods=["GET", "POST"])
 @login_required
 def favorites():
-    fav_movies = Favorites.query.filter_by(email=current_user.email).all()
+    # fav_movies = Favorites.query.filter_by(email=current_user.email).all()
+    fav_movies = current_user.favorite_movies
     print(fav_movies)
     favs = fav_movies
     if favs:
@@ -206,7 +174,7 @@ def search():
 
 @api.route("/search/<query>", methods=["GET"])
 @login_required
-def searchResult(query):
+def searchResult(query: str):
     data = get_genres()
     title = query
     movies = movie_search(query)
@@ -243,22 +211,19 @@ def searchResult(query):
 @api.route("/movie/<id>", methods=["POST", "GET"])
 @login_required
 def viewMovie(id):
-    (title, genres, poster, tagline, overview, release_date, lil_poster) = movie_info(
-        id
-    )
-    if request.method == "POST":
-        data = request.get_json()
-        rating = data["rating"]
-        textReview = data["textReview"]
-        new_rating = Reviews(
-            movie_id=int(id), user=current_user.name, rating=rating, text=textReview
-        )
-        db.session.begin()
-        db.session.add(new_rating)
-        db.session.commit()
+    (title, genres, poster, tagline, overview, release_date, lil_poster) = movie_info(id)
+    # if request.method == "POST":
+    #     data = request.get_json()
+    #     rating = data["rating"]
+    #     textReview = data["textReview"]
+    #     new_rating = Reviews(movie_id=int(id), user=current_user.name, rating=rating, text=textReview)
+    #     db.session.begin()
+    #     db.session.add(new_rating)
+    #     db.session.commit()
 
-    reviews = Reviews.query.filter_by(movie_id=id).all()
-
+    # reviews = Reviews.query.filter_by(movie_id=id).all()
+    reviews = []
+    
     if reviews:
         users = []
         ratings = []
@@ -297,89 +262,59 @@ def viewMovie(id):
     }
     return jsonify(viewMovie_dict)
 
-
-@api.route("/add/<id>", methods=["POST", "GET"])
+@api.route('/add/<int:movie_id>', methods=["POST","GET"])
 @login_required
-def addMovie(id):
-    favorites = Favorites.query.filter(
-        Favorites.email.like("%" + current_user.email + "%")
-    ).all()
-    print(favorites)
-    if favorites is None:
-        new_movie = Favorites(email=current_user.email, movie=int(id))
-        db.session.begin()
-        db.session.add(new_movie)
-        db.session.commit()
-    if id in favorites:
-        return jsonify("Movie is already added")
-    new_movie = Favorites(email=current_user.email, movie=int(id))
-    db.session.begin()
-    db.session.add(new_movie)
-    db.session.commit()
+def addMovie(movie_id: int):
+    current_user.add_favorite_movie(movie_id)
     return jsonify("Movie is added")
 
-
-@api.route("/remove/<id>", methods=["POST", "GET"])
+@api.route('/remove/<int:movie_id>', methods=["POST","GET"])
 @login_required
-def removeMovie(id):
-    favorites = Favorites.query.filter_by(email=current_user.email, movie=id).first()
-    if favorites is None:
-        return jsonify("Not in Favorites")
-    db.session.begin()
-    db.session.delete(favorites)
-    db.session.commit()
+def removeMovie(movie_id: int):
+    current_user.remove_favorite_movie(movie_id)
     return jsonify("Removed from Favorites")
 
+# @api.route('/reviewbbgurl', methods=["GET"])
+# @login_required
+# def gimme_my_reviews():
+#     name = current_user.name
+#     reviews = Reviews.query.filter_by(user=name).all()
+#     if reviews:
+#         my_reviews=[]
+#         ratings=[]
+#         texts=[]
+#         movie_ids=[]
+#         movies={}
+#         for i in reviews:
+#             print (i.__dict__)
+#             my_reviews.append(i.__dict__.get('id'))
+#             ratings.append(i.__dict__.get('rating'))
+#             texts.append(i.__dict__.get('text'))
+#             movie_ids.append(i.__dict__.get('movie_id'))
+#             (title, genres, poster, tagline, overview, release_date, lil_poster) = movie_info(i.__dict__.get('movie_id'))
+#             movies[i.__dict__.get('movie_id')] = (title, lil_poster)
+#         view_ratings_dicts = {
+#             "review_ids": my_reviews,
+#             "current_user": current_user.name,
+#             "texts": texts, 
+#             "ratings": ratings,
+#             "movies": movies,
+#             "movie_ids": movie_ids, 
+#             "length":len(ratings)
+#         }
+#         return jsonify(view_ratings_dicts)
+#     return jsonify({"error":"you got no comments bro"})
 
-@api.route("/reviewbbgurl", methods=["GET"])
-@login_required
-def gimme_my_reviews():
-    name = current_user.name
-    reviews = Reviews.query.filter_by(user=name).all()
-    if reviews:
-        my_reviews = []
-        ratings = []
-        texts = []
-        movie_ids = []
-        movies = {}
-        for i in reviews:
-            print(i.__dict__)
-            my_reviews.append(i.__dict__.get("id"))
-            ratings.append(i.__dict__.get("rating"))
-            texts.append(i.__dict__.get("text"))
-            movie_ids.append(i.__dict__.get("movie_id"))
-            (
-                title,
-                genres,
-                poster,
-                tagline,
-                overview,
-                release_date,
-                lil_poster,
-            ) = movie_info(i.__dict__.get("movie_id"))
-            movies[i.__dict__.get("movie_id")] = (title, lil_poster)
-        view_ratings_dicts = {
-            "review_ids": my_reviews,
-            "current_user": current_user.name,
-            "texts": texts,
-            "ratings": ratings,
-            "movies": movies,
-            "movie_ids": movie_ids,
-            "length": len(ratings),
-        }
-        return jsonify(view_ratings_dicts)
-    return jsonify({"error": "you got no comments bro"})
-
-
-@api.route("/delete_comment/<e>", methods=["GET"])
-def remove_that_review(e):
-    reviews = Reviews.query.filter_by(id=e).first()
-    if reviews is None:
-        return jsonify("Review does not exist")
-    db.session.begin()
-    db.session.delete(reviews)
-    db.session.commit()
-    return jsonify("Removed from Reviews")
+# @bp.route('/delete_comment/<e>', methods=["GET"])
+# def remove_that_review(e):
+#     reviews = Reviews.query.filter_by(id=e).first()
+#     if reviews is None:
+#         return (jsonify("Review does not exist"))
+#     db.session.begin()
+#     db.session.delete(reviews)
+#     db.session.commit()
+#     return (jsonify("Removed from Reviews"))
+    
 
 
 @api.route("/logout")
