@@ -5,7 +5,7 @@ import { fetchAuthStatus, flaskClient } from '../fetcher';
 const INITIAL_AUTH = {
   email: null, is_auth: false, status: 'loading', username: null,
 };
-const UNAUTHENTICATED = {
+export const UNAUTHENTICATED = {
   email: null, is_auth: false, status: 'unauthenticated', username: null,
 };
 
@@ -91,7 +91,7 @@ export function RequireAuth({ children }) {
 
 export function Auth() {
   const {
-    user, fetchAuth, signOut,
+    user, fetchAuth, signOut, signIn,
   } = useAuth();
 
   return (
