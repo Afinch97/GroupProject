@@ -341,5 +341,4 @@ def catch_all_route(_):
 #     return render_template("index.html")
 
 
-
 app.run(debug=True)
