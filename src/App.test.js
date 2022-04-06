@@ -1,7 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import React from 'react';
 import MockAdapter from 'axios-mock-adapter';
-import { act } from 'react-dom/test-utils';
 import { flaskClient } from './fetcher';
 import App from './App';
 import { UNAUTHENTICATED } from './components/Auth';
@@ -14,6 +13,7 @@ const mockAuthResponse = {
 mock.onGet('/auth').reply(401, UNAUTHENTICATED);
 
 beforeEach(() => {
+  // suppress console.error calls, that are called from unauthenticated user
   jest.spyOn(console, 'error').mockImplementation(() => {});
 });
 

@@ -91,7 +91,7 @@ export function RequireAuth({ children }) {
 
 export function Auth() {
   const {
-    user, fetchAuth, signOut, signIn,
+    user, fetchAuth, signOut,
   } = useAuth();
 
   return (

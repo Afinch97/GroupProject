@@ -45,7 +45,12 @@
       "consistent-return": 1,
       "camelcase": 1,
       "no-useless-escape": 1
-    }
+    },
+    "ignorePatterns": [
+      "node_modules",
+      "reportWebVitals.js",
+      "*.test.js"
+    ]
   },
   "browserslist": {
     "production": [
