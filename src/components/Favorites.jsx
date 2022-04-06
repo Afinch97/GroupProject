@@ -46,12 +46,12 @@ function Favorites() {
             (
             {i + 1}
             )
-            {titles[i] }
+            {titles[i]}
           </h2>
           <Link to={`/${ids[i]}`}><input type="submit" value="More info" /></Link>
         </p>
         <img src={String(posters[i])} />
-        <p>{ taglines[i] }</p>
+        <p>{taglines[i]}</p>
         {console.log(ids[i])}
         <button onClick={() => Delete(ids[i])}>Remove from Favorites</button>
       </div>,

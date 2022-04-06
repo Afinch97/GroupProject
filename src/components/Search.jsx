@@ -24,9 +24,10 @@ function Search() {
   };
   useEffect(() => getRepo(), []);
   console.log(title, ids, titles, posters, taglines);
-  const Add = (e) => {
-    e.preventDefault();
-    fetch(`/api/add/${e}`);
+  const Add = (item, $event) => {
+    console.log($event, item);
+    $event.preventDefault();
+    fetch(`/add/${item}`);
   };
 
   for (let i = 0; i < 10; i++) {
@@ -37,14 +38,14 @@ function Search() {
             (
             {i + 1}
             )
-            {titles[i] }
+            {titles[i]}
           </h2>
           <Link to={`/info/${ids[i]}`}><input type="submit" value="More info" /></Link>
         </p>
         <img src={String(posters[i])} />
-        <p>{ taglines[i] }</p>
+        <p>{taglines[i]}</p>
         {console.log(ids[i])}
-        <button onClick={() => Add(ids[i])}>Add to Favorites</button>
+        <button onClick={(e) => Add(ids[i], e)}>Add to Favorites</button>
       </div>,
     );
   }
