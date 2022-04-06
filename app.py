@@ -1,4 +1,5 @@
 # pylint: disable=no-member
+import json
 import os
 import re
 from multiprocessing import synchronize
@@ -48,7 +49,7 @@ login_manager.init_app(app)
 def load_user(username):
     return User.query.get(username)
 
-login_manager.login_view = 'api.login'
+# login_manager.login_view = 'api.login'
 
 # set up a separate route to serve the index.html file generated
 # by create-react-app/npm run build.
@@ -61,26 +62,41 @@ api = Blueprint("api", __name__, template_folder="./static/react", url_prefix="/
 # def catch_all_route(path):
 #     return render_template("index.html")
 
+def get_auth_status():
+    AUTHENTICATED = 'authenticated'
+    UNAUTHENTICATED = 'unauthenticated'
+    STATUS = 'status'
+    IS_AUTH = 'is_auth'
+    response = {STATUS: UNAUTHENTICATED, IS_AUTH: False, 'email': None, 'username': None}
+    if current_user.is_authenticated:
+        response[STATUS] = AUTHENTICATED
+        response[IS_AUTH] = True
+        response['username'] = current_user.username
+        response['email'] = current_user.email
+    return response
+
+@api.route('/auth')
+def auth_check():
+    """Endpoint for testing authentication status of user"""
+    return jsonify(get_auth_status())
+
 
 @api.route("/login", methods=["POST"])
 def login():
-    data = request.get_json()
+    data = request.json
     print(data)
-    email = data["username"]
-    username = data["username"]
-    password = data["password"]
-    remember = data["remember"]
-
-    
-    
+    username = data.get("username")
+    password = data.get("password")
+    remember = data.get("remember", False)
     user = User.query.get(username)
     if not user:
-        return jsonify({"error":"User does not exist, please create new account."})
+        return jsonify({"message":"User does not exist, please create new account."}), 401
     if not user.password_is_valid(password):
         flash("Username or Password Incorrect")
-        return jsonify({"error": "Password is incorrect"})
+        return jsonify({"message": "Password is incorrect"}), 401
     login_user(user, remember=remember)
-    return jsonify({"success": "Successfully logged in"})
+    # return jsonify({"success": "Successfully logged in"})
+    return jsonify(get_auth_status())
 
 
 @api.route("/register", methods=["POST"])
@@ -317,14 +333,20 @@ def removeMovie(movie_id: int):
     
 
 
-@api.route("/logout")
+@api.route("/logout", methods=['POST'])
 @login_required
 def logout():
     logout_user()
+    # return redirect(url_for('home'))
+    return jsonify({})
 
 
 app.register_blueprint(api)
 
+
+@app.route('/')
+def home():
+    return render_template("index.html")
 
 @app.errorhandler(404)
 def catch_all_route(_):

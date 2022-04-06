@@ -2,35 +2,23 @@ import { Button } from 'bootstrap';
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import '../../node_modules/bootstrap/dist/css/bootstrap.min.css';
+import { useAuth } from './Auth';
 import './homeStyle.css';
 
 function Home() {
   const [user, setUser] = useState({ username: '', password: '', remember: false });
-  const [error, setError] = useState('');
+  const { signIn, authError } = useAuth();
   const navigate = useNavigate();
-  const Submit = (e) => {
+  const submit = (e) => {
     e.preventDefault();
-    console.log(JSON.stringify(user));
-    fetch('/api/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(user) })
-      .then((res) => res.json())
-      .then((json) => {
-        console.log(json);
-        const key = Object.keys(json);
-        console.log(key[0]);
-        if (key[0] === 'success') {
-          navigate('/searchy');
-        } else if (key[0] === 'error') {
-          console.log(Object.values(json));
-          setError(Object.values(json));
-        }
-      });
+    signIn(user);
   };
 
   return (
     <div className="inner">
-      <form onSubmit={Submit}>
+      <form onSubmit={submit}>
         <h3>Sign In</h3>
-        <div className="error"><p>{error}</p></div>
+        <div className="error"><p>{authError}</p></div>
         <div className="form-group">
           <label htmlFor="user">Username/Email: </label>
           <input type="text" className="form-control" id="user" placeholder="Username or Email" onChange={(e) => setUser({ ...user, username: e.target.value })} value={user.username} />
@@ -50,9 +38,9 @@ function Home() {
       <br />
       <p>
         Don&apos;t have an account?
-        {' '}
         <br />
         <Link className="btn btn-secondary btn-sm" role="button" to="/register">Register</Link>
+        <Link className="btn btn-secondary btn-sm" role="button" to="/auth">Auth</Link>
       </p>
     </div>
 
