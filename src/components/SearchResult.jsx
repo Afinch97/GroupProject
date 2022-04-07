@@ -27,7 +27,6 @@ function SearchResult() {
   console.log(title, ids, titles, posters, taglines);
   const Add = (item, $event) => {
     console.log($event, item);
-    $event.preventDefault();
     fetch(`/add/${item}`);
   };
 
