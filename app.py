@@ -271,7 +271,6 @@ def addMovie(movie_id: int):
     # get_movie_info(movie_id)
     print(get_movie_info(movie_id))
     print(current_user)
-    print(movie_id)
     return jsonify("Movie is added")
 
 @api.route('/remove/<int:movie_id>', methods=["POST", "GET"])
