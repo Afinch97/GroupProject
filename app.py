@@ -284,6 +284,7 @@ def viewMovie(id):
 @login_required
 def addMovie(movie_id: int):
     movie = get_movie_info(movie_id)
+    print(movie_id)
     id = movie_id
     title = movie["title"]
     link = MediaWiki.get_wiki_link(title)
