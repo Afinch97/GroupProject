@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import {
-  Home, Register, Search, SearchResult, Movie, NavBar, Favorites, Comments, AuthProvider,
+  Home, Register, Search, SearchResult, Movie, NavBar, AuthProvider, ProfilePage,
 } from './components';
 import { Auth, RequireAuth } from './components/Auth';
 
@@ -14,6 +14,7 @@ function App() {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/auth" element={<Auth />} />
+              <Route path="/profile" element={<ProfilePage />} />
               <Route path="/register" element={<Register />} />
               <Route
                 path="/searchy"
@@ -39,24 +40,6 @@ function App() {
                   <>
                     <NavBar />
                     <Movie />
-                  </>
-            )}
-              />
-              <Route
-                path="/favs"
-                element={(
-                  <>
-                    <NavBar />
-                    <Favorites />
-                  </>
-            )}
-              />
-              <Route
-                path="/myComments"
-                element={(
-                  <>
-                    <NavBar />
-                    <Comments />
                   </>
             )}
               />

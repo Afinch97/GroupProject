@@ -1,6 +1,6 @@
-import { Button } from 'bootstrap';
+/* eslint-disable jsx-a11y/label-has-associated-control */
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import '../../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import { useAuth } from './Auth';
 import './homeStyle.css';
@@ -8,7 +8,6 @@ import './homeStyle.css';
 function Home() {
   const [user, setUser] = useState({ username: '', password: '', remember: false });
   const { signIn, authError } = useAuth();
-  const navigate = useNavigate();
   const submit = (e) => {
     e.preventDefault();
     signIn(user);
@@ -29,7 +28,7 @@ function Home() {
         </div>
         <div className="form-group">
           <div className="custom-control custom-checkbox">
-            <input type="checkbox" className="custom-control-input" id="remember" value={user.remember} onChange={(e) => setUser({ ...user, remember: !user.remember })} />
+            <input type="checkbox" className="custom-control-input" id="remember" value={user.remember} onChange={() => setUser({ ...user, remember: !user.remember })} />
             <label className="custom-control-label" htmlFor="remember"> Remember me</label>
           </div>
         </div>

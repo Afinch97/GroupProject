@@ -13,8 +13,6 @@ function Search() {
     await fetch('/api/search')
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
-        console.log(data.ids);
         setTitle(data.title);
         setIds(data.ids);
         setPosters(data.posters);
@@ -22,19 +20,14 @@ function Search() {
         setTitles(data.titles);
       });
   };
-  console.log('hello');
   useEffect(() => getRepo(), []);
-  console.log(title, ids, titles, posters, taglines);
-  const Add = (item, $event) => {
-    console.log($event, item);
-    fetch(`/api/add/${item}`, { method: 'POST', headers: { 'Content-Type': 'application/json' } })
-      .then((res) => res.json())
-      .then((json) => {
-        console.log(json);
-      });
+  // console.log(title, ids, titles, posters, taglines);
+  const Add = (e) => {
+    e.preventDefault();
+    fetch(`/api/add/${e}`);
   };
 
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 10; i += 1) {
     items.push(
       <div className="item">
         <p>
@@ -42,14 +35,14 @@ function Search() {
             (
             {i + 1}
             )
-            {titles[i]}
+            {titles[i] }
           </h2>
           <Link to={`/info/${ids[i]}`}><input type="submit" value="More info" /></Link>
         </p>
-        <img src={String(posters[i])} />
-        <p>{taglines[i]}</p>
-        {console.log(ids[i])}
-        <button onClick={(e) => Add(ids[i], e)}>Add to Favorites</button>
+        <img src={String(posters[i])} alt="movie-poster" />
+        <p>{ taglines[i] }</p>
+        {/* {console.log(ids[i])} */}
+        <button onClick={() => Add(ids[i])} type="button">Add to Favorites</button>
       </div>,
     );
   }
@@ -62,12 +55,6 @@ function Search() {
       </h1>
       <div className="container">
         {items}
-      </div>
-      <h2>
-        Recommended movies
-      </h2>
-      <div className="container">
-        { }
       </div>
     </>
   );

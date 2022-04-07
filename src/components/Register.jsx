@@ -1,5 +1,6 @@
+/* eslint-disable jsx-a11y/label-has-associated-control */
 import React, { useState } from 'react';
-import { Navigate, Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import '../../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import './homeStyle.css';
 
@@ -11,7 +12,9 @@ function Register() {
   const navigate = useNavigate();
 
   const emailValidation = (event) => {
-    const regex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+    // const regex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))
+    // @(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+    const regex = /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i;
     if (regex.test(event) === false) {
       setMessage('Email is not valid');
       return false;
@@ -23,13 +26,13 @@ function Register() {
     e.preventDefault();
 
     if (emailValidation(user.email)) {
-      console.log(JSON.stringify(user));
+      // console.log(JSON.stringify(user));
       fetch('/register', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(user) })
         .then((res) => res.json())
         .then((json) => {
-          console.log(json);
+          // console.log(json);
           const key = Object.keys(json);
-          console.log(key[0]);
+          // console.log(key[0]);
           if (key[0] === 'success') {
             navigate('/');
           } else if (key[0] === 'error') {
@@ -37,7 +40,7 @@ function Register() {
           }
         });
     } else {
-      console.log('email invalid');
+      // console.log('email invalid');
     }
   };
 
