@@ -1,7 +1,5 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { Navigate, useLocation, useNavigate } from 'react-router-dom';
-import { fetchAuthStatus, flaskClient } from '../fetcher';
-import { useAuth } from './Auth';
+import React, { useEffect, useState } from 'react';
+import { flaskClient } from '../fetcher';
 
 async function fetchRecommended() {
   try {
@@ -46,7 +44,6 @@ function FavoriteMovieList() {
 }
 
 function ProfilePage() {
-  const { user } = useAuth();
   return (
     <div>
       <FavoriteMovieList />
