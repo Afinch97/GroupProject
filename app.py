@@ -14,7 +14,7 @@ from flask_login import (LoginManager, UserMixin, current_user, login_required,
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import check_password_hash, generate_password_hash
 
-import MediaWiki
+from MediaWiki import get_wiki_link
 from database import db, setup_database
 from models import User, Movie, Genre
 from tmdb import (get_favorites, get_genres, get_movie_info, get_trending, movie_info,
@@ -147,9 +147,11 @@ def favorites():
 
     return jsonify({"no favorites"})
 
+# "GET /api/add/634649 HTTP/1.1" 200 -
+# "GET /searchy/api/add/755437 HTTP/1.1" 200 -
 
 @api.route("/search", methods=["GET"])
-# @login_required
+@login_required
 def search():
     data = get_genres()
     movies = get_trending()
@@ -166,7 +168,7 @@ def search():
     taglines = movies["taglines"]
     wikiLinks = []
     for i in range(len(titles)):
-        links = MediaWiki.get_wiki_link(titles[i])
+        links = get_wiki_link(titles[i])
         try:
             wikiLinks.append(
                 links[3][0]
@@ -201,7 +203,7 @@ def searchResult(query: str):
 
     wikiLinks = []
     for i in range(len(titles)):
-        links = MediaWiki.get_wiki_link(titles[i])
+        links = get_wiki_link(titles[i])
         try:
             wikiLinks.append(
                 links[3][0]
@@ -287,7 +289,7 @@ def addMovie(movie_id: int):
     # print(movie_id)
     id = movie_id
     title = movie["title"]
-    link = MediaWiki.get_wiki_link(title)
+    link = get_wiki_link(title)
     tagline = movie["tagline"]
     overview = movie["overview"]
     wiki_url = link[3][1]
