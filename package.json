@@ -45,7 +45,12 @@
       "consistent-return": 1,
       "camelcase": 1,
       "no-useless-escape": 1
-    }
+    },
+    "ignorePatterns": [
+      "node_modules",
+      "reportWebVitals.js",
+      "*.test.js"
+    ]
   },
   "browserslist": {
     "production": [
@@ -61,6 +66,7 @@
   },
   "homepage": "/static/react",
   "devDependencies": {
+    "axios-mock-adapter": "^1.20.0",
     "eslint": "^7.32.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-plugin-import": "^2.25.4",

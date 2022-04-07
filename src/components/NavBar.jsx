@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
 import { NavLink, useNavigate, Link } from 'react-router-dom';
+import { useAuth } from './Auth';
 import './NavBar.css';
 
 function NavBar() {
   const [term, setTerm] = useState('');
+  const { signOut } = useAuth();
   const navigate = useNavigate();
-  const logout = () => {
-    fetch('/api/logout');
-    window.location = '/';
-  };
   const Submit = (e) => {
     e.preventDefault();
     // navigate(`/searchy/${term}`)
@@ -26,7 +24,7 @@ function NavBar() {
           <button type="submit"><i className="fa fa-search" /></button>
         </form>
       </div>
-      <a onClick={logout} className="Logout">Logout</a>
+      <a onClick={signOut} className="Logout">Logout</a>
     </div>
   );
 }
