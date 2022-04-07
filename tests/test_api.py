@@ -1,4 +1,5 @@
 from GroupProject.app import app as prj_app
+# change to your local folder name
 import pytest
 
 
