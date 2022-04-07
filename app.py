@@ -266,6 +266,8 @@ def viewMovie(id):
 @login_required
 def addMovie(movie_id: int):
     current_user.add_favorite_movie(movie_id)
+    print(movie_id)
+    print(current_user.favorite_movies)
     return jsonify("Movie is added")
 
 @api.route('/remove/<int:movie_id>', methods=["POST","GET"])

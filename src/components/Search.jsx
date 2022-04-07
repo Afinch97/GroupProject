@@ -2,6 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './searchStyle.css';
 
+function Add(x) {
+  console.log(x);
+  const adds = (`/api/add/${x}`);
+  fetch(adds);
+}
+
 function Search() {
   const [title, setTitle] = useState('');
   const [ids, setIds] = useState([]);
@@ -24,10 +30,6 @@ function Search() {
   };
   useEffect(() => getRepo(), []);
   console.log(title, ids, titles, posters, taglines);
-  const Add = (e) => {
-    e.preventDefault();
-    fetch(`/api/add/${e}`);
-  };
 
   for (let i = 0; i < 10; i++) {
     items.push(
@@ -37,12 +39,12 @@ function Search() {
             (
             {i + 1}
             )
-            {titles[i] }
+            {titles[i]}
           </h2>
           <Link to={`/info/${ids[i]}`}><input type="submit" value="More info" /></Link>
         </p>
         <img src={String(posters[i])} />
-        <p>{ taglines[i] }</p>
+        <p>{taglines[i]}</p>
         {console.log(ids[i])}
         <button onClick={() => Add(ids[i])}>Add to Favorites</button>
       </div>,
