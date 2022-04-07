@@ -1,4 +1,5 @@
 # pylint: disable=no-member
+import json
 import os
 import re
 from multiprocessing import synchronize
@@ -48,7 +49,7 @@ login_manager.init_app(app)
 def load_user(username):
     return User.query.get(username)
 
-login_manager.login_view = 'api.login'
+# login_manager.login_view = 'api.login'
 
 # set up a separate route to serve the index.html file generated
 # by create-react-app/npm run build.
@@ -61,23 +62,41 @@ api = Blueprint("api", __name__, template_folder="./static/react", url_prefix="/
 # def catch_all_route(path):
 #     return render_template("index.html")
 
+def get_auth_status():
+    AUTHENTICATED = 'authenticated'
+    UNAUTHENTICATED = 'unauthenticated'
+    STATUS = 'status'
+    IS_AUTH = 'is_auth'
+    response = {STATUS: UNAUTHENTICATED, IS_AUTH: False, 'email': None, 'username': None}
+    if current_user.is_authenticated:
+        response[STATUS] = AUTHENTICATED
+        response[IS_AUTH] = True
+        response['username'] = current_user.username
+        response['email'] = current_user.email
+    return response
+
+@api.route('/auth')
+def auth_check():
+    """Endpoint for testing authentication status of user"""
+    return jsonify(get_auth_status())
+
 
 @api.route("/login", methods=["POST"])
 def login():
-    data = request.get_json()
+    data = request.json
     print(data)
-    email = data["username"]
-    username = data["username"]
-    password = data["password"]
-    remember = data["remember"]
+    username = data.get("username")
+    password = data.get("password")
+    remember = data.get("remember", False)
     user = User.query.get(username)
     if not user:
-        return jsonify({"error":"User does not exist, please create new account."})
+        return jsonify({"message":"User does not exist, please create new account."}), 401
     if not user.password_is_valid(password):
         flash("Username or Password Incorrect")
-        return jsonify({"error": "Password is incorrect"})
+        return jsonify({"message": "Password is incorrect"}), 401
     login_user(user, remember=remember)
-    return jsonify({"success": "Successfully logged in"})
+    # return jsonify({"success": "Successfully logged in"})
+    return jsonify(get_auth_status())
 
 
 @api.route("/register", methods=["POST"])
@@ -90,7 +109,7 @@ def register():
     user = User.query.filter_by(email=email).first()
     if user:
 
-        return jsonify({"error":"User already exists"})    
+        return jsonify({"error":"User already exists"})
     new_user = User(email=email, username=name, password=generate_password_hash(password, method='sha256'))
     # db.session.begin()
     db.session.add(new_user)
@@ -268,8 +287,9 @@ def viewMovie(id):
 def addMovie(movie_id: int):
     print("hello")
     # current_user.add_favorite_movie(movie_id)
-    # get_movie_info(movie_id)
-    print(get_movie_info(movie_id))
+    movie = get_movie_info(movie_id)
+    print(movie["title"])
+
     print(current_user)
     return jsonify("Movie is added")
 
@@ -301,10 +321,10 @@ def removeMovie(movie_id: int):
 #         view_ratings_dicts = {
 #             "review_ids": my_reviews,
 #             "current_user": current_user.name,
-#             "texts": texts, 
+#             "texts": texts,
 #             "ratings": ratings,
 #             "movies": movies,
-#             "movie_ids": movie_ids, 
+#             "movie_ids": movie_ids,
 #             "length":len(ratings)
 #         }
 #         return jsonify(view_ratings_dicts)
@@ -319,17 +339,23 @@ def removeMovie(movie_id: int):
 #     db.session.delete(reviews)
 #     db.session.commit()
 #     return (jsonify("Removed from Reviews"))
-    
 
 
-@api.route("/logout")
+
+@api.route("/logout", methods=['POST'])
 @login_required
 def logout():
     logout_user()
+    # return redirect(url_for('home'))
+    return jsonify({})
 
 
 app.register_blueprint(api)
 
+
+@app.route('/')
+def home():
+    return render_template("index.html")
 
 @app.errorhandler(404)
 def catch_all_route(_):
@@ -344,7 +370,6 @@ def catch_all_route(_):
 # @app.route("/<path:path>")
 # def catch_all_route(path):
 #     return render_template("index.html")
-
 
 
 app.run(debug=True)
