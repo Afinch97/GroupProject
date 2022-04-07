@@ -13,8 +13,6 @@ function Search() {
     await fetch('/api/search')
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
-        console.log(data.ids);
         setTitle(data.title);
         setIds(data.ids);
         setPosters(data.posters);
@@ -29,7 +27,7 @@ function Search() {
     fetch(`/api/add/${item}`);
   };
 
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 10; i += 1) {
     items.push(
       <div className="item">
         <p>

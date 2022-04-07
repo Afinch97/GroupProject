@@ -30,7 +30,7 @@ function SearchResult() {
     fetch(`/add/${item}`);
   };
 
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 10; i += 1) {
     items.push(
       <div className="item">
         <p>

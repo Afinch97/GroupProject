@@ -44,7 +44,6 @@ function AuthProvider({ children }) {
         navigate(from, { replace: true });
       }
     } catch (error) {
-      console.error(error?.response);
       setAuthStatus(UNAUTHENTICATED);
       setAuthError(error?.response?.data?.message);
       // setAuthError()

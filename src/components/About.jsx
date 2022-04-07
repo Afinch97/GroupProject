@@ -1,20 +1,23 @@
+/* eslint-disable jsx-a11y/label-has-associated-control */
 import React, { useState } from 'react';
-import { Navigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 function About() {
   const [user, setUser] = useState({ username: '', password: '', remember: false });
   const [error, setError] = useState('');
+  const navigate = useNavigate();
   const submit = (e) => {
     e.preventDefault();
-    console.log(JSON.stringify(user));
+    // console.log(JSON.stringify(user));
     fetch('/api/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(user) })
       .then((res) => res.json())
       .then((json) => {
-        console.log(json);
+        // console.log(json);
         const key = Object.keys(json);
-        console.log(key[0]);
+        // console.log(key[0]);
         if (key[0] === 'success') {
-          return <Navigate to="/login" />;
+          // return <Navigate to="/login" />;
+          navigate('/login');
         } if (key[0] === 'error') {
           setError(Object.values(json));
         }
@@ -32,7 +35,7 @@ function About() {
         <input type="password" name="password" id="password" onChange={(e) => setUser({ ...user, password: e.target.value })} value={user.password} />
 
         <label className="checkbox">
-          <input type="checkbox" name="remember" value={user.remember} onChange={(e) => setUser({ ...user, remember: !user.remember })} />
+          <input type="checkbox" name="remember" value={user.remember} onChange={() => setUser({ ...user, remember: !user.remember })} />
           Remember me
         </label>
         <input type="submit" name="Sign Up" />
