@@ -10,14 +10,13 @@ function SearchResult() {
   const [taglines, setTaglines] = useState([]);
   const [titles, setTitles] = useState([]);
   const items = [];
-
   useEffect(() => {
     const getRepo = async () => {
       await fetch(`/api/search/${query}`)
         .then((response) => response.json())
         .then((data) => {
-        // console.log(data);
-        // console.log(data.ids);
+          // console.log(data);
+          // console.log(data.ids);
           setTitle(data.title);
           setIds(data.ids);
           setPosters(data.posters);
@@ -29,9 +28,9 @@ function SearchResult() {
     getRepo();
   }, [query]);
   // console.log(title, ids, titles, posters, taglines);
-  const Add = (e) => {
-    e.preventDefault();
-    fetch(`/api/add/${e}`);
+  const Add = (item) => {
+    // console.log($event, item);
+    fetch(`api/add/${item}`);
   };
 
   for (let i = 0; i < 10; i += 1) {
@@ -42,13 +41,13 @@ function SearchResult() {
             (
             {i + 1}
             )
-            {titles[i] }
+            {titles[i]}
           </h2>
           <Link to={`/info/${ids[i]}`}><input type="submit" value="More info" /></Link>
         </p>
         <img src={String(posters[i])} alt="movie-poster" />
-        <p>{ taglines[i] }</p>
-        <button onClick={() => Add(ids[i])} type="button">Add to Favorites</button>
+        <p>{taglines[i]}</p>
+        <button onClick={(e) => Add(ids[i], e)} type="button">Add to Favorites</button>
       </div>,
     );
   }

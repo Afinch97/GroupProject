@@ -193,7 +193,6 @@ def searchResult(query: str):
     data = get_genres()
     title = query
     movies = movie_search(query)
-    print("hello")
     titles = movies["titles"]
     overviews = movies["overviews"]
     posters = movies["posters"]
@@ -226,7 +225,6 @@ def searchResult(query: str):
 @api.route("/movie/<id>", methods=["POST", "GET"])
 @login_required
 def viewMovie(id):
-    print("hello")
     print(id)
     (title, genres, poster, tagline, overview, release_date, lil_poster) = movie_info(id)
     print(current_user)
