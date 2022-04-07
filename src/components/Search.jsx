@@ -22,7 +22,6 @@ function Search() {
         setTitles(data.titles);
       });
   };
-  console.log('hello');
   useEffect(() => getRepo(), []);
   console.log(title, ids, titles, posters, taglines);
   const Add = (item, $event) => {
