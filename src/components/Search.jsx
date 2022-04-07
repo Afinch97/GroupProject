@@ -39,7 +39,7 @@ function Search() {
           </h2>
           <Link to={`/info/${ids[i]}`}><input type="submit" value="More info" /></Link>
         </p>
-        <img src={String(posters[i])} />
+        <img src={String(posters[i])} alt="movie-poster" />
         <p>{taglines[i]}</p>
         {console.log(ids[i])}
         <button onClick={(e) => Add(ids[i], e)}>Add to Favorites</button>
