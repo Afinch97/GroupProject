@@ -283,12 +283,29 @@ def viewMovie(id):
 @api.route('/add/<int:movie_id>', methods=["POST", "GET"])
 @login_required
 def addMovie(movie_id: int):
-    print("hello")
-    # current_user.add_favorite_movie(movie_id)
     movie = get_movie_info(movie_id)
-    print(movie["title"])
-
-    print(current_user)
+    # print(movie_id)
+    id = movie_id
+    title = movie["title"]
+    link = MediaWiki.get_wiki_link(title)
+    tagline = movie["tagline"]
+    overview = movie["overview"]
+    wiki_url = link[3][1]
+    # print(wiki_url)
+    image_url = movie["lil_poster"]
+    # print(image_url)
+    add_movie_tdb = Movie(
+        id = id,
+        title = title,
+        tagline = tagline,
+        overview = overview,
+        wiki_url = wiki_url,
+        image_url = image_url
+    )
+    
+    db.session.add(add_movie_tdb)
+    db.session.commit()
+    current_user.add_favorite_movie(movie_id)
     return jsonify("Movie is added")
 
 @api.route('/remove/<int:movie_id>', methods=["POST", "GET"])

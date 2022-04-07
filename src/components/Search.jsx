@@ -56,12 +56,6 @@ function Search() {
       <div className="container">
         {items}
       </div>
-      <h2>
-        Recommended movies
-      </h2>
-      <div className="container">
-        { }
-      </div>
     </>
   );
 }
