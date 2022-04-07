@@ -10,24 +10,27 @@ function SearchResult() {
   const [taglines, setTaglines] = useState([]);
   const [titles, setTitles] = useState([]);
   const items = [];
-  const getRepo = async () => {
-    await fetch(`/api/search/${query}`)
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-        console.log(data.ids);
-        setTitle(data.title);
-        setIds(data.ids);
-        setPosters(data.posters);
-        setTaglines(data.taglines);
-        setTitles(data.titles);
-      });
-  };
-  useEffect(() => getRepo(), []);
-  console.log(title, ids, titles, posters, taglines);
-  const Add = (item, $event) => {
-    console.log($event, item);
-    fetch(`/add/${item}`);
+  useEffect(() => {
+    const getRepo = async () => {
+      await fetch(`/api/search/${query}`)
+        .then((response) => response.json())
+        .then((data) => {
+          // console.log(data);
+          // console.log(data.ids);
+          setTitle(data.title);
+          setIds(data.ids);
+          setPosters(data.posters);
+          setTaglines(data.taglines);
+          setTitles(data.titles);
+        });
+    };
+
+    getRepo();
+  }, [query]);
+  // console.log(title, ids, titles, posters, taglines);
+  const Add = (item) => {
+    // console.log($event, item);
+    fetch(`api/add/${item}`);
   };
 
   for (let i = 0; i < 10; i += 1) {
@@ -44,7 +47,7 @@ function SearchResult() {
         </p>
         <img src={String(posters[i])} alt="movie-poster" />
         <p>{taglines[i]}</p>
-        <button onClick={(e) => Add(ids[i], e)}>Add to Favorites</button>
+        <button onClick={(e) => Add(ids[i], e)} type="button">Add to Favorites</button>
       </div>,
     );
   }

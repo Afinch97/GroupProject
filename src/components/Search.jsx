@@ -21,9 +21,9 @@ function Search() {
       });
   };
   useEffect(() => getRepo(), []);
-  console.log(title, ids, titles, posters, taglines);
-  const Add = (item, $event) => {
-    console.log($event, item);
+  // console.log(title, ids, titles, posters, taglines);
+  const Add = (item) => {
+    // console.log($event, item);
     fetch(`/api/add/${item}`);
   };
 
@@ -41,8 +41,8 @@ function Search() {
         </p>
         <img src={String(posters[i])} alt="movie-poster" />
         <p>{taglines[i]}</p>
-        {console.log(ids[i])}
-        <button onClick={(e) => Add(ids[i], e)}>Add to Favorites</button>
+        {/* {console.log(ids[i])} */}
+        <button onClick={(e) => Add(ids[i], e)} type="button">Add to Favorites</button>
       </div>,
     );
   }
