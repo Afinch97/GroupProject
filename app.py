@@ -288,8 +288,9 @@ def viewMovie(id):
 def addMovie(movie_id: int):
     print("hello")
     # current_user.add_favorite_movie(movie_id)
-    # get_movie_info(movie_id)
-    print(get_movie_info(movie_id))
+    movie = get_movie_info(movie_id)
+    print(movie["title"])
+
     print(current_user)
     return jsonify("Movie is added")
 
