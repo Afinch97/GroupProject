@@ -8,7 +8,9 @@
     "@testing-library/react": "^12.1.3",
     "@testing-library/user-event": "^13.5.0",
     "axios": "^0.26.1",
+    "bootstrap": "^5.1.3",
     "react": "^17.0.2",
+    "react-bootstrap": "^2.2.3",
     "react-dom": "^17.0.2",
     "react-router-dom": "^6.2.2",
     "react-scripts": "^4.0.3",
@@ -41,8 +43,14 @@
       "jsx-a11y/control-has-associated-label": 1,
       "jsx-a11y/click-events-have-key-events": 1,
       "consistent-return": 1,
-      "camelcase": 1
-    }
+      "camelcase": 1,
+      "no-useless-escape": 1
+    },
+    "ignorePatterns": [
+      "node_modules",
+      "reportWebVitals.js",
+      "*.test.js"
+    ]
   },
   "browserslist": {
     "production": [
@@ -58,6 +66,7 @@
   },
   "homepage": "/static/react",
   "devDependencies": {
+    "axios-mock-adapter": "^1.20.0",
     "eslint": "^7.32.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-plugin-import": "^2.25.4",

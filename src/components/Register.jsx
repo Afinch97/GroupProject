@@ -1,48 +1,76 @@
 import React, { useState } from 'react';
-import { Navigate } from 'react-router-dom';
-import './formStyle.css';
+import { Navigate, Link, useNavigate } from 'react-router-dom';
+import '../../node_modules/bootstrap/dist/css/bootstrap.min.css';
+import './homeStyle.css';
 
 function Register() {
   const [user, setUser] = useState({ username: '', email: '', password: '' });
   const [error, setError] = useState('');
-  const submit = (e) => {
+  const [message, setMessage] = useState('');
+
+  const navigate = useNavigate();
+
+  const emailValidation = (event) => {
+    const regex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+    if (regex.test(event) === false) {
+      setMessage('Email is not valid');
+      return false;
+    }
+    return true;
+  };
+
+  const Submit = (e) => {
     e.preventDefault();
-    console.log(JSON.stringify(user));
-    fetch('/api/register', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(user) })
-      .then((res) => res.json())
-      .then((json) => {
-        console.log(json);
-        const key = Object.keys(json);
-        console.log(key[0]);
-        if (key[0] === 'success') {
-          return <Navigate to="/" />;
-        } if (key[0] === 'error') {
-          setError(Object.values(json));
-        }
-      });
+
+    if (emailValidation(user.email)) {
+      console.log(JSON.stringify(user));
+      fetch('/register', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(user) })
+        .then((res) => res.json())
+        .then((json) => {
+          console.log(json);
+          const key = Object.keys(json);
+          console.log(key[0]);
+          if (key[0] === 'success') {
+            navigate('/');
+          } else if (key[0] === 'error') {
+            setError(Object.values(json));
+          }
+        });
+    } else {
+      console.log('email invalid');
+    }
+  };
+
+  const set = (name) => ({ target: { value } }) => {
+    setUser((oldValues) => ({ ...oldValues, [name]: value }));
   };
 
   return (
-    <div className="loginBox">
-      <h1>Sign Up</h1>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      <form onSubmit={submit}>
-        <label htmlFor="user">Username: </label>
-        <input type="text" name="user" id="user" onChange={(e) => setUser({ ...user, username: e.target.value })} value={user.username} />
-        <br />
-        <label htmlFor="user">Email: </label>
-        <input type="text" name="email" id="email" onChange={(e) => setUser({ ...user, email: e.target.value })} value={user.email} />
-        <br />
-        <label htmlFor="user">Password: </label>
-        <input type="password" name="password" id="password" onChange={(e) => setUser({ ...user, password: e.target.value })} value={user.password} />
-        <br />
-        <input type="submit" name="Sign Up" />
+    <div className="inner">
+      <form onSubmit={Submit}>
+        <h3>Sign Up</h3>
+        {error && <p style={{ color: 'red' }}>{error}</p>}
+        <div className="form-group">
+          <label htmlFor="user">Username: </label>
+          <input type="text" className="form-control" id="user" placeholder="Username" onChange={set('username')} value={user.username} />
+        </div>
+        <div className="form-group">
+          <label htmlFor="user">Email: </label>
+          <input type="text" className="form-control" id="email" placeholder="Email" onChange={set('email')} value={user.email} />
+          {message}
+        </div>
+        <div className="form-group">
+          <label htmlFor="user">Password: </label>
+          <input type="password" className="form-control" placeholder="Password" id="password" onChange={set('password')} value={user.password} />
+        </div>
+        <button type="submit" className="btn btn-primary btn-block">Sign Up</button>
       </form>
+      <br />
       <p>
         Aleady have an account?
         {' '}
         <br />
-        <a href="/">Log in here</a>
+        <Link className="btn btn-secondary btn-sm" role="button" to="/">Log In</Link>
       </p>
     </div>
   );

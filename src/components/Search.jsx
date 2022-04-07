@@ -28,7 +28,11 @@ function Search() {
   const Add = (item, $event) => {
     console.log($event, item);
     $event.preventDefault();
-    fetch(`/add/${item}`);
+    fetch(`/api/add/${item}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify() })
+      .then((res) => res.json())
+      .then((json) => {
+        console.log(json);
+      });
   };
 
   for (let i = 0; i < 10; i++) {
@@ -59,6 +63,12 @@ function Search() {
       </h1>
       <div className="container">
         {items}
+      </div>
+      <h2>
+        Recommended movies
+      </h2>
+      <div className="container">
+        { }
       </div>
     </>
   );

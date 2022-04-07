@@ -122,8 +122,27 @@ def movie_info(id):
     tagline = data['tagline']
     overview = data['overview']
     release_date = data['release_date']
-    
     return (title, genres, poster, tagline, overview, release_date, lil_poster)
+    
+def get_movie_info(id):
+    INFO_URL = 'https://api.themoviedb.org/3/movie/'+str(id)+'?api_key='+str(os.getenv('TMDB_KEY'))+'&language=en-US'
+
+    info = requests.get(INFO_URL)
+    movie_info = {}
+    data = info.json()
+    movie_info['title'] = str(data["title"])
+    movie_info['genres'] = [genre["name"] for genre in data["genres"]]
+    movie_info['poster_path'] = data['poster_path']
+
+    poster = None if movie_info['poster_path'] is None else POSTER_PATH_3 + movie_info['poster_path']
+    movie_info['lil_poster'] = POSTER_PATH +  movie_info['poster_path']
+    movie_info['tagline'] = data['tagline']
+    movie_info['overview'] = data['overview']
+    movie_info['release_date'] = data['release_date']
+    return movie_info
+
+
+
 
 def get_favorites(favs):
     titles = []

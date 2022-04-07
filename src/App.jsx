@@ -1,71 +1,76 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import {
-  Home, Register, Search, SearchResult, Movie, NavBar, Favorites, Comments,
+  Home, Register, Search, SearchResult, Movie, NavBar, Favorites, Comments, AuthProvider,
 } from './components';
+import { Auth, RequireAuth } from './components/Auth';
 
 function App() {
   return (
-    <div className="App">
-      <Router>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/register" element={<Register />} />
-          <Route
-            path="/searchy"
-            element={(
-              <>
-                <NavBar />
-                <Search />
-              </>
+    <Router>
+      <AuthProvider>
+        <div className="App">
+          <RequireAuth>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/auth" element={<Auth />} />
+              <Route path="/register" element={<Register />} />
+              <Route
+                path="/searchy"
+                element={(
+                  <>
+                    <NavBar />
+                    <Search />
+                  </>
             )}
-          />
-          <Route
-            path="/searchy/:query"
-            element={(
-              <>
-                <NavBar />
-                <SearchResult />
-              </>
+              />
+              <Route
+                path="/searchy/:query"
+                element={(
+                  <>
+                    <NavBar />
+                    <SearchResult />
+                  </>
             )}
-          />
-          <Route
-            path="/info/:movieId"
-            element={(
-              <>
-                <NavBar />
-                <Movie />
-              </>
+              />
+              <Route
+                path="/info/:movieId"
+                element={(
+                  <>
+                    <NavBar />
+                    <Movie />
+                  </>
             )}
-          />
-          <Route
-            path="/favs"
-            element={(
-              <>
-                <NavBar />
-                <Favorites />
-              </>
+              />
+              <Route
+                path="/favs"
+                element={(
+                  <>
+                    <NavBar />
+                    <Favorites />
+                  </>
             )}
-          />
-          <Route
-            path="/myComments"
-            element={(
-              <>
-                <NavBar />
-                <Comments />
-              </>
+              />
+              <Route
+                path="/myComments"
+                element={(
+                  <>
+                    <NavBar />
+                    <Comments />
+                  </>
             )}
-          />
-          <Route
-            path="*"
-            element={(
-              <Home />
+              />
+              <Route
+                path="*"
+                element={(
+                  <Home />
             )}
-          />
-        </Routes>
-      </Router>
-    </div>
-
+              />
+            </Routes>
+          </RequireAuth>
+        </div>
+      </AuthProvider>
+    </Router>
   );
 }
 

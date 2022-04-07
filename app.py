@@ -16,7 +16,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 import MediaWiki
 from database import db, setup_database
 from models import User, Movie, Genre
-from tmdb import (get_favorites, get_genres, get_trending, movie_info,
+from tmdb import (get_favorites, get_genres, get_movie_info, get_trending, movie_info,
                   movie_search)
 
 load_dotenv(find_dotenv())
@@ -267,7 +267,11 @@ def viewMovie(id):
 @login_required
 def addMovie(movie_id: int):
     print("hello")
-    current_user.add_favorite_movie(movie_id)
+    # current_user.add_favorite_movie(movie_id)
+    # get_movie_info(movie_id)
+    print(get_movie_info(movie_id))
+    print(current_user)
+    print(movie_id)
     return jsonify("Movie is added")
 
 @api.route('/remove/<int:movie_id>', methods=["POST", "GET"])
