@@ -1,14 +1,15 @@
+/* eslint-disable jsx-a11y/label-has-associated-control */
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import './styleMovie.css';
 
 function Movie() {
   const { movieId } = useParams();
-  console.log({ movieId });
+  // console.log({ movieId });
   const [areReviews, setAreReviews] = useState(false);
   const [genres, setGenres] = useState([]);
   const [title, setTitle] = useState('');
-  const [id, setId] = useState();
+  const [, setId] = useState();
   const [poster, setPoster] = useState('');
   const [tagline, setTagline] = useState('');
   const [overview, setOverview] = useState('');
@@ -21,43 +22,46 @@ function Movie() {
   const [inputs, setInputs] = useState({});
   const [current_user, setCurrent_user] = useState('');
 
-  const getRepo = async () => {
-    await fetch(`/api/movie/${movieId}`)
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-        setTitle(data.title);
-        setId(data.id);
-        setPoster(data.poster);
-        setTagline(data.tagline);
-        setOverview(data.overview);
-        setPoster(data.poster);
-        setReleaseDate(data.release_date);
-        setGenres(data.genres);
-        setCurrent_user(data.current_user);
-        if (data.reviews === 'true') {
-          setAreReviews(true);
-          setUser(data.user);
-          setRating(data.rating);
-          setText(data.text);
-          setReviewLength(data.rev_length);
-          setStartForm('Write a Review:');
-        }
-      });
-  };
-  useEffect(() => getRepo(), []);
-  console.log(areReviews, genres, title, id, poster, tagline, overview, releaseDate, user, rating, text, reviewLength);
-  console.log(reviewLength);
+  useEffect(() => {
+    const getRepo = async () => {
+      await fetch(`/api/movie/${movieId}`)
+        .then((response) => response.json())
+        .then((data) => {
+        // console.log(data);
+          setTitle(data.title);
+          setId(data.id);
+          setPoster(data.poster);
+          setTagline(data.tagline);
+          setOverview(data.overview);
+          setPoster(data.poster);
+          setReleaseDate(data.release_date);
+          setGenres(data.genres);
+          setCurrent_user(data.current_user);
+          if (data.reviews === 'true') {
+            setAreReviews(true);
+            setUser(data.user);
+            setRating(data.rating);
+            setText(data.text);
+            setReviewLength(data.rev_length);
+            setStartForm('Write a Review:');
+          }
+        });
+    };
+    getRepo();
+  }, [movieId]);
+  // console.log(areReviews, genres, title, id, poster, tagline, overview,
+  // releaseDate, user, rating, text, reviewLength);
+  // console.log(reviewLength);
   const reviews = [];
   if (areReviews === true) {
-    for (let i = 0; i < reviewLength; i++) {
+    for (let i = 0; i < reviewLength; i += 1) {
       reviews.push(
         <>
           <div className="name_and_rating">
-            {console.log(user)}
+            {/* {console.log(user)}
             {console.log(rating)}
             {console.log(user[i])}
-            {console.log(rating[i])}
+            {console.log(rating[i])} */}
             <h3>
               {user[i]}
               :
@@ -106,7 +110,7 @@ function Movie() {
       </form>
       <div className="movieInfo">
         <div className="poster">
-          <img src={poster} />
+          <img src={poster} alt="movie-poster" />
         </div>
         <div className="details">
           <div className="title">{title}</div>

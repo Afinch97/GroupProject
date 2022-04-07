@@ -9,7 +9,6 @@ export async function fetchAuthStatus() {
     const response = await flaskClient.get('/auth');
     return response.data;
   } catch (error) {
-    console.error(error);
     return error;
   }
 }
