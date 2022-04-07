@@ -85,10 +85,9 @@ def auth_check():
 def login():
     data = request.json
     print(data)
-    email = data["username"]
-    username = data["username"]
-    password = data["password"]
-    remember = data["remember"]
+    username = data.get("username")
+    password = data.get("password")
+    remember = data.get("remember", False)
     user = User.query.get(username)
     if not user:
         return jsonify({"message":"User does not exist, please create new account."}), 401
@@ -110,7 +109,7 @@ def register():
     user = User.query.filter_by(email=email).first()
     if user:
 
-        return jsonify({"error":"User already exists"})    
+        return jsonify({"error":"User already exists"})
     new_user = User(email=email, username=name, password=generate_password_hash(password, method='sha256'))
     # db.session.begin()
     db.session.add(new_user)
@@ -322,10 +321,10 @@ def removeMovie(movie_id: int):
 #         view_ratings_dicts = {
 #             "review_ids": my_reviews,
 #             "current_user": current_user.name,
-#             "texts": texts, 
+#             "texts": texts,
 #             "ratings": ratings,
 #             "movies": movies,
-#             "movie_ids": movie_ids, 
+#             "movie_ids": movie_ids,
 #             "length":len(ratings)
 #         }
 #         return jsonify(view_ratings_dicts)
@@ -340,7 +339,7 @@ def removeMovie(movie_id: int):
 #     db.session.delete(reviews)
 #     db.session.commit()
 #     return (jsonify("Removed from Reviews"))
-    
+
 
 
 @api.route("/logout", methods=['POST'])
