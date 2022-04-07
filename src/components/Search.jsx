@@ -27,8 +27,7 @@ function Search() {
   console.log(title, ids, titles, posters, taglines);
   const Add = (item, $event) => {
     console.log($event, item);
-    $event.preventDefault();
-    fetch(`/api/add/${item}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify() })
+    fetch(`/api/add/${item}`, { method: 'POST', headers: { 'Content-Type': 'application/json' } })
       .then((res) => res.json())
       .then((json) => {
         console.log(json);
