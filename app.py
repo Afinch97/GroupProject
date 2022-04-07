@@ -17,7 +17,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 import MediaWiki
 from database import db, setup_database
 from models import User, Movie, Genre
-from tmdb import (get_favorites, get_genres, get_trending, movie_info,
+from tmdb import (get_favorites, get_genres, get_movie_info, get_trending, movie_info,
                   movie_search)
 
 load_dotenv(find_dotenv())
@@ -25,7 +25,7 @@ load_dotenv(find_dotenv())
 def create_app():
     flask_app = Flask(__name__)
     flask_app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0
-    flask_app.config["SECRET_KEY"] = os.getenv('SECRET_KEY',"secret-key-goes-here")
+    flask_app.config["SECRET_KEY"] = os.getenv('SECRET_KEY', "secret-key-goes-here")
     flask_app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
     if flask_app.config["SQLALCHEMY_DATABASE_URI"].startswith("postgres://"):
         flask_app.config["SQLALCHEMY_DATABASE_URI"] = flask_app.config[
@@ -109,7 +109,7 @@ def register():
     user = User.query.filter_by(email=email).first()
     if user:
 
-        return jsonify({"error":"User already exists"})    
+        return jsonify({"error":"User already exists"})
     new_user = User(email=email, username=name, password=generate_password_hash(password, method='sha256'))
     # db.session.begin()
     db.session.add(new_user)
@@ -164,7 +164,6 @@ def search():
     posters = movies["posters"]
     ids = movies["ids"]
     taglines = movies["taglines"]
-
     wikiLinks = []
     for i in range(len(titles)):
         links = MediaWiki.get_wiki_link(titles[i])
@@ -194,7 +193,6 @@ def searchResult(query: str):
     data = get_genres()
     title = query
     movies = movie_search(query)
-
     titles = movies["titles"]
     overviews = movies["overviews"]
     posters = movies["posters"]
@@ -227,7 +225,11 @@ def searchResult(query: str):
 @api.route("/movie/<id>", methods=["POST", "GET"])
 @login_required
 def viewMovie(id):
+    print(id)
     (title, genres, poster, tagline, overview, release_date, lil_poster) = movie_info(id)
+    print(current_user)
+    print("hello")
+    print(movie_info(id))
     # if request.method == "POST":
     #     data = request.get_json()
     #     rating = data["rating"]
@@ -239,7 +241,7 @@ def viewMovie(id):
 
     # reviews = Reviews.query.filter_by(movie_id=id).all()
     reviews = []
-    
+    print(id)
     if reviews:
         users = []
         ratings = []
@@ -250,7 +252,7 @@ def viewMovie(id):
             ratings.append(i.__dict__.get("rating"))
             texts.append(i.__dict__.get("text"))
         viewMovie_dict = {
-            "current_user": current_user.name,
+            "current_user": current_user,
             "title": title,
             "genres": genres,
             "poster": poster,
@@ -266,7 +268,7 @@ def viewMovie(id):
         }
         return jsonify(viewMovie_dict)
     viewMovie_dict = {
-        "current_user": current_user.name,
+        "current_user": current_user,
         "title": title,
         "genres": genres,
         "poster": poster,
@@ -278,13 +280,18 @@ def viewMovie(id):
     }
     return jsonify(viewMovie_dict)
 
-@api.route('/add/<int:movie_id>', methods=["POST","GET"])
+@api.route('/add/<int:movie_id>', methods=["POST", "GET"])
 @login_required
 def addMovie(movie_id: int):
-    current_user.add_favorite_movie(movie_id)
+    print("hello")
+    # current_user.add_favorite_movie(movie_id)
+    movie = get_movie_info(movie_id)
+    print(movie["title"])
+
+    print(current_user)
     return jsonify("Movie is added")
 
-@api.route('/remove/<int:movie_id>', methods=["POST","GET"])
+@api.route('/remove/<int:movie_id>', methods=["POST", "GET"])
 @login_required
 def removeMovie(movie_id: int):
     current_user.remove_favorite_movie(movie_id)
@@ -312,10 +319,10 @@ def removeMovie(movie_id: int):
 #         view_ratings_dicts = {
 #             "review_ids": my_reviews,
 #             "current_user": current_user.name,
-#             "texts": texts, 
+#             "texts": texts,
 #             "ratings": ratings,
 #             "movies": movies,
-#             "movie_ids": movie_ids, 
+#             "movie_ids": movie_ids,
 #             "length":len(ratings)
 #         }
 #         return jsonify(view_ratings_dicts)
@@ -330,7 +337,7 @@ def removeMovie(movie_id: int):
 #     db.session.delete(reviews)
 #     db.session.commit()
 #     return (jsonify("Removed from Reviews"))
-    
+
 
 
 @api.route("/logout", methods=['POST'])

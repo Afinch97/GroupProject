@@ -128,12 +128,12 @@ function Movie() {
       </div>
       <div className="reviews">
         {areReviews === true
-            && (
+          && (
             <>
               <h2>Reviews:</h2>
               {reviews}
             </>
-            )}
+          )}
         <form onSubmit={submit} action="/movie/{{id}}" className="reviewbox">
           <h2>{startForm}</h2>
           <label htmlFor="rating">Rate the movie out of 10: </label>

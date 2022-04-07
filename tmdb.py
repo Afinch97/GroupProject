@@ -1,15 +1,15 @@
 import os
+import json 
 import requests
 from dotenv import load_dotenv, find_dotenv
 import MediaWiki
-import json 
+
 load_dotenv(find_dotenv())
 
 BASE_URL = 'https://api.themoviedb.org/3/trending/movie/week?api_key='+ str(os.getenv('TMDB_KEY'))
 POSTER_PATH = 'https://image.tmdb.org/t/p/w185'
-POSTER_PATH_3='https://image.tmdb.org/t/p/w300'
+POSTER_PATH_3= 'https://image.tmdb.org/t/p/w300'
 GENRE_URL = 'https://api.themoviedb.org/3/genre/movie/list?api_key='+str(os.getenv('TMDB_Key'))+'&language=en-US'
-
 def get_trending():
     response = requests.get(BASE_URL)
     data = response.json()
@@ -58,7 +58,7 @@ def get_genres():
     def get_genre(genres):
         return genres
     
-    names = map(get_genre,genres)
+    names = map(get_genre, genres)
     
     return {
         'genres': list(names),
@@ -66,7 +66,7 @@ def get_genres():
     }
     
 def movie_search(query):
-    SEARCH_URL= 'https://api.themoviedb.org/3/search/movie?api_key='+os.getenv('TMDB_KEY')+'&language=en-US&query='+ query +'&page=1&include_adult=false'
+    SEARCH_URL = 'https://api.themoviedb.org/3/search/movie?api_key='+os.getenv('TMDB_KEY')+'&language=en-US&query='+ query +'&page=1&include_adult=false'
     
     response = requests.get(SEARCH_URL)
     data = response.json()
@@ -122,14 +122,33 @@ def movie_info(id):
     tagline = data['tagline']
     overview = data['overview']
     release_date = data['release_date']
-    
     return (title, genres, poster, tagline, overview, release_date, lil_poster)
+    
+def get_movie_info(id):
+    INFO_URL = 'https://api.themoviedb.org/3/movie/'+str(id)+'?api_key='+str(os.getenv('TMDB_KEY'))+'&language=en-US'
+
+    info = requests.get(INFO_URL)
+    movie_info = {}
+    data = info.json()
+    movie_info['title'] = str(data["title"])
+    movie_info['genres'] = [genre["name"] for genre in data["genres"]]
+    movie_info['poster_path'] = data['poster_path']
+
+    poster = None if movie_info['poster_path'] is None else POSTER_PATH_3 + movie_info['poster_path']
+    movie_info['lil_poster'] = POSTER_PATH +  movie_info['poster_path']
+    movie_info['tagline'] = data['tagline']
+    movie_info['overview'] = data['overview']
+    movie_info['release_date'] = data['release_date']
+    return movie_info
+
+
+
 
 def get_favorites(favs):
-    titles =[]
-    posters =[]
-    ids =[]
-    taglines=[]
+    titles = []
+    posters = []
+    ids = []
+    taglines = []
     for i in range(len(favs)):
         INFO_URL = 'https://api.themoviedb.org/3/movie/'+str(favs[i].id)+'?api_key='+str(os.getenv('TMDB_KEY'))+'&language=en-US'
         info = requests.get(INFO_URL)
@@ -139,7 +158,7 @@ def get_favorites(favs):
         titles.append(title)
         poster_path = data['poster_path']
         if poster_path == None:
-            poster= None
+            poster = None
         poster = str(POSTER_PATH + poster_path)
         posters.append(poster)
         tagline = data['tagline']
