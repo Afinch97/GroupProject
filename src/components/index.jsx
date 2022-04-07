@@ -4,6 +4,8 @@ export { default as Register } from './Register';
 export { default as Movie } from './Movie';
 export { default as Search } from './Search';
 export { default as NavBar } from './NavBar';
+export { default as NavBar2 } from './NavBar2';
 export { default as SearchResult } from './SearchResult';
 export { default as AuthProvider } from './Auth';
 export { default as ProfilePage } from './Profile';
+export { default as Login } from './Login';

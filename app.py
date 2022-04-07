@@ -55,7 +55,7 @@ def load_user(username):
 # by create-react-app/npm run build.
 # By doing this, we make it so you can paste in all your old app routes
 # from Milestone 2 without interfering with the functionality here.
-api = Blueprint("api", __name__, template_folder="./static/react", url_prefix="/api")
+api = Blueprint("api", __name__, template_folder="./static/parcel", url_prefix="/api")
 
 # @app.route("/", defaults={"path": ""})
 # @app.route("/<path:path>")
