@@ -1,4 +1,28 @@
 # Milestone 3
+
+## Quickstart
+
+```bash
+# Create a virtual environment in the current directory by running
+python3 -m venv .venv
+
+# Load the virtual environment
+source .venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run API server
+python3 app.py
+
+# to leave virtual environment
+deactivate
+
+# if you install any python packages that are not nin the requirements.txt file
+# run the following command before pushing to the repo!
+pip freeze > requirements.txt
+```
+
 This made the entire with a seperate flask backend and react frontend. I was not able to get the navbar to not show up in the sign up and log in pages. I could probably figure it out at some point but I don't want to turn it in a week late lol. Also couldn't re-render the comments page after deleting a comment.
 
 I plan on fixing everything on my own.
@@ -10,9 +34,7 @@ Here's a list:
 -overall fetch is the greatest issue so far
 -At one point it stopped rendering becasue root was in single quotes
 -conflicting urls with the router
--I really can't return the numbers from query becasue it returns as a class instead of just the numbers that they are
-    - So to fix this I had to convert the "object" to a string and then convert that into int. Literally (int(str(favs[i]))) fixed it
-
+-I really can't return the numbers from query becasue it returns as a class instead of just the numbers that they are - So to fix this I had to convert the "object" to a string and then convert that into int. Literally (int(str(favs[i]))) fixed it
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
