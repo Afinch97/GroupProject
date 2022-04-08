@@ -57,6 +57,9 @@ class Movie(db.Model):
         """Convert the genres for this movie into a string list, delimited by commas"""
         return ", ".join([genre.name for genre in self.genres])
 
+    def __repr__(self) -> str:
+        return f'Movie(id={self.id}, title={self.title}, overview={self.overview}, image_url={self.image_url})'
+
 class MovieDoesNotExistInDatabase(ValueError):
     pass
 

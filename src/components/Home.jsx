@@ -1,6 +1,5 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React from 'react';
 import '../../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import { useAuth } from './Auth';
 import './homeStyle.css';

@@ -3,6 +3,7 @@ import json
 import os
 import re
 from multiprocessing import synchronize
+from typing import List
 
 import requests
 import sqlalchemy
@@ -19,6 +20,7 @@ from database import db, setup_database
 from models import User, Movie, Genre
 from tmdb import (get_favorites, get_genres, get_movie_info, get_trending, movie_info,
                   movie_search)
+from operator import attrgetter
 
 load_dotenv(find_dotenv())
 
@@ -121,31 +123,7 @@ def register():
 @api.route("/favorites", methods=["GET", "POST"])
 @login_required
 def favorites():
-    # fav_movies = Favorites.query.filter_by(email=current_user.email).all()
-    fav_movies = current_user.favorite_movies
-    print(fav_movies)
-    favs = fav_movies
-    if favs:
-        fav_length = len(favs)
-        print(fav_length)
-        favorites = get_favorites(favs)
-        fav_titles = favorites["fav_titles"]
-        fav_posters = favorites["fav_posters"]
-        fav_ids = favorites["fav_ids"]
-        fav_taglines = favorites["fav_taglines"]
-        print(favorites)
-
-        fav_dict = {
-            "length": fav_length,
-            "titles": fav_titles,
-            "posters": fav_posters,
-            "taglines": fav_taglines,
-            "ids": fav_ids,
-        }
-        print(fav_dict)
-        return jsonify(fav_dict)
-
-    return jsonify({"no favorites"})
+    return jsonify({'data': serialize_movie_list(current_user.favorite_movies)})
 
 
 @api.route("/search", methods=["GET"])
@@ -280,39 +258,50 @@ def viewMovie(id):
     }
     return jsonify(viewMovie_dict)
 
+def serialize_movie(movie: Movie):
+    attributes = ['title', 'id', 'overview', 'tagline', 'image_url', 'wiki_url']
+    return dict(zip(attributes, attrgetter(*attributes)(movie)))
+
+def serialize_movie_list(movies: List[Movie]):
+    return  [serialize_movie(movie) for movie in movies]
+    
+
+@api.route('/movies')
+def fetch_movies():
+    movies = Movie.query.all()
+    return jsonify({'data': serialize_movie_list(movies)})
+
+
 @api.route('/add/<int:movie_id>', methods=["POST", "GET"])
 @login_required
 def addMovie(movie_id: int):
-    movie = get_movie_info(movie_id)
-    # print(movie_id)
-    id = movie_id
-    title = movie["title"]
-    link = MediaWiki.get_wiki_link(title)
-    tagline = movie["tagline"]
-    overview = movie["overview"]
-    wiki_url = link[3][1]
-    # print(wiki_url)
-    image_url = movie["lil_poster"]
-    # print(image_url)
-    add_movie_tdb = Movie(
-        id = id,
-        title = title,
-        tagline = tagline,
-        overview = overview,
-        wiki_url = wiki_url,
-        image_url = image_url
-    )
-    
-    db.session.add(add_movie_tdb)
-    db.session.commit()
-    current_user.add_favorite_movie(movie_id)
+    movie = Movie.query.get(movie_id)
+    if movie is None:
+        movie_details = get_movie_info(movie_id)
+        link = MediaWiki.get_wiki_link(movie_details['title'])
+        wiki_url = link[3][1]
+
+        movie = Movie(
+            id = movie_details['id'],
+            title = movie_details['title'],
+            tagline = movie_details['tagline'],
+            overview = movie_details['overview'],
+            wiki_url = wiki_url,
+            image_url = movie_details['lil_poster']
+        )
+        db.session.add(movie)
+        db.session.commit()
+    current_user.add_favorite_movie(movie.id)
     return jsonify("Movie is added")
 
 @api.route('/remove/<int:movie_id>', methods=["POST", "GET"])
 @login_required
 def removeMovie(movie_id: int):
+    movie = Movie.query.get(movie_id)
+    if movie is None:
+        return jsonify({'message': 'Movie does not exist'}), 404
     current_user.remove_favorite_movie(movie_id)
-    return jsonify("Removed from Favorites")
+    return jsonify(serialize_movie(movie))
 
 # @api.route('/reviewbbgurl', methods=["GET"])
 # @login_required

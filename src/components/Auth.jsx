@@ -82,8 +82,8 @@ export function RequireAuth({ children }) {
   if (user.status === 'unauthenticated' && !PUBLIC_URLS.includes(location.pathname)) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
-  if (user.status === 'loading') {
-    return <div>Loading...</div>;
+  if (user.status !== 'loading') {
+    return <div><div className="loader">Loading...</div></div>;
   }
   return children;
 }

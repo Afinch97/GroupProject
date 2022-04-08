@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Nav } from 'react-bootstrap';
 import { useAuth } from './Auth';
 
@@ -13,10 +13,16 @@ function NavBar2({ children }) {
           <Nav.Link href="/">Home</Nav.Link>
         </Nav.Item>
         <Nav.Item>
-          <Nav.Link eventKey="link-1" href="/profile">Profile</Nav.Link>
+          <Nav.Link href="/profile">Profile</Nav.Link>
         </Nav.Item>
         <Nav.Item>
-          <Nav.Link eventKey="Logout" onClick={() => signOut()}>
+          <Nav.Link href="/movies">Movies</Nav.Link>
+        </Nav.Item>
+        <Nav.Item>
+          <Nav.Link href="/favorites">Favorites</Nav.Link>
+        </Nav.Item>
+        <Nav.Item>
+          <Nav.Link onClick={() => signOut()}>
             Logout
           </Nav.Link>
         </Nav.Item>

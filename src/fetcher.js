@@ -12,3 +12,21 @@ export async function fetchAuthStatus() {
     return error;
   }
 }
+
+export async function removeMovieFavorite(movieId) {
+  try {
+    const response = await flaskClient.get(`/remove/${movieId}`);
+    return response.data;
+  } catch (error) {
+    return error;
+  }
+}
+
+export async function addMovieFavorite(movieId) {
+  try {
+    const response = await flaskClient.get(`/add/${movieId}`);
+    return response.data;
+  } catch (error) {
+    return error;
+  }
+}
