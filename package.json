@@ -58,6 +58,7 @@
     ]
   },
   "source": "src/index.jsx",
+  "homepage": "/static/react",
   "targets": {
     "default": {
       "distDir": "./static/parcel"

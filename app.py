@@ -51,13 +51,20 @@ login_manager.init_app(app)
 def load_user(username):
     return User.query.get(username)
 
-# login_manager.login_view = 'api.login'
 
+@app.route('/login')
+def login_page():
+    return render_template('index.html')
+
+login_manager.login_view = 'login_page'
+
+PYTHON_ENV = os.getenv('PYTHON_ENV', 'production')
+TEMPLATE_FOLDER = './static/react' if PYTHON_ENV == 'production' else "./static/parcel"
 # set up a separate route to serve the index.html file generated
 # by create-react-app/npm run build.
 # By doing this, we make it so you can paste in all your old app routes
 # from Milestone 2 without interfering with the functionality here.
-api = Blueprint("api", __name__, template_folder="./static/parcel", url_prefix="/api")
+api = Blueprint("api", __name__, template_folder=TEMPLATE_FOLDER, url_prefix="/api")
 
 # @app.route("/", defaults={"path": ""})
 # @app.route("/<path:path>")
@@ -80,6 +87,9 @@ def get_auth_status():
 @api.route('/auth')
 def auth_check():
     """Endpoint for testing authentication status of user"""
+    auth_status = get_auth_status()
+    if not auth_status['is_auth']:
+        return jsonify(auth_status), 401
     return jsonify(get_auth_status())
 
 

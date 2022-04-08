@@ -11,3 +11,4 @@ export { default as ProfilePage } from './Profile';
 export { default as Login } from './Login';
 export { default as MovieList } from './MovieList';
 export { default as Favorites } from './Favorites';
+export { default as Spinner } from './Spinner';

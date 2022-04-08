@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Container from 'react-bootstrap/Container';
 import { flaskClient } from '../fetcher';
 import MovieTile from './MovieTile';
+import Spinner from './Spinner';
 
 async function fetchFavoriteMovies() {
   try {
@@ -28,7 +29,7 @@ function Favorites() {
     <div>
       <h2 style={{ textAlign: 'center' }}>Your Favorites</h2>
       <Container>
-        {isLoading ? <div>Loading... </div>
+        {isLoading ? <Spinner />
           : (movieRecommendations.map((movie) => (
             <MovieTile
               movie={movie}

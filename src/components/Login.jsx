@@ -39,7 +39,6 @@ function Login() {
         Don&apos;t have an account?
         <br />
         <Link className="btn btn-secondary btn-sm" role="button" to="/register">Register</Link>
-        <Link className="btn btn-secondary btn-sm" role="button" to="/auth">Auth</Link>
       </p>
     </div>
 

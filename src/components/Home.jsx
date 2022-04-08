@@ -6,6 +6,7 @@ import './homeStyle.css';
 
 function Home() {
   const { user } = useAuth();
+
   const welcomeMessage = `Welcome ${user.username}!`;
   return (
     <div className="inner">
@@ -13,6 +14,7 @@ function Home() {
       <div>
         {welcomeMessage}
       </div>
+      <div>{`user: ${JSON.stringify(user)}`}</div>
     </div>
 
   );

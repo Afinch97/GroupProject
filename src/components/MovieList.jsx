@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Container from 'react-bootstrap/Container';
 import { flaskClient } from '../fetcher';
 import MovieTile from './MovieTile';
+import Spinner from './Spinner';
 
 async function fetchAllMovies() {
   try {
@@ -29,7 +30,7 @@ function MovieList() {
       <div>
         <h2 style={{ textAlign: 'center' }}>All Movies</h2>
         <Container>
-          <div>Loading... </div>
+          <Spinner />
         </Container>
       </div>
     );

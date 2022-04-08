@@ -7,14 +7,14 @@ import { UNAUTHENTICATED } from './components/Auth';
 
 const mock = new MockAdapter(flaskClient);
 
-const mockAuthResponse = {
-  email: 'test@test.com', is_auth: true, status: 'authenticated', username: 'test',
-};
-mock.onGet('/auth').reply(401, UNAUTHENTICATED);
+// const mockAuthResponse = {
+//   email: 'test@test.com', is_auth: true, status: 'authenticated', username: 'test',
+// };
 
 beforeEach(() => {
   // suppress console.error calls, that are called from unauthenticated user
-  jest.spyOn(console, 'error').mockImplementation(() => {});
+  // jest.spyOn(console, 'error').mockImplementation(() => {});
+    mock.onGet('/auth').reply(401);
 });
 
 test('renders learn react link', async () => {

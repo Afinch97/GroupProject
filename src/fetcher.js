@@ -5,12 +5,8 @@ export const flaskClient = axios.create({
 });
 
 export async function fetchAuthStatus() {
-  try {
-    const response = await flaskClient.get('/auth');
-    return response.data;
-  } catch (error) {
-    return error;
-  }
+  const response = await flaskClient.get('/auth');
+  return response.data;
 }
 
 export async function removeMovieFavorite(movieId) {
