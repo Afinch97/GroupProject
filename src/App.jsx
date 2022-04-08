@@ -23,16 +23,16 @@ function App() {
                     <NavBar />
                     <Search />
                   </>
-            )}
+                )}
               />
               <Route
-                path="/searchy/:query"
+                path="/:query"
                 element={(
                   <>
                     <NavBar />
                     <SearchResult />
                   </>
-            )}
+                )}
               />
               <Route
                 path="/info/:movieId"
@@ -41,13 +41,13 @@ function App() {
                     <NavBar />
                     <Movie />
                   </>
-            )}
+                )}
               />
               <Route
                 path="*"
                 element={(
                   <Home />
-            )}
+                )}
               />
             </Routes>
           </RequireAuth>

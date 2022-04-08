@@ -149,6 +149,7 @@ def favorites():
 
 # "GET /api/add/634649 HTTP/1.1" 200 -
 # "GET /searchy/api/add/755437 HTTP/1.1" 200 -
+# "GET /searchy/api/add/636879 HTTP/1.1" 200 -
 
 @api.route("/search", methods=["GET"])
 @login_required
@@ -285,23 +286,32 @@ def viewMovie(id):
 @api.route('/add/<int:movie_id>', methods=["POST", "GET"])
 @login_required
 def addMovie(movie_id: int):
+    print("hello")
     movie = get_movie_info(movie_id)
-    # print(movie_id)
+    print(movie_id)
     id = movie_id
     title = movie["title"]
     link = get_wiki_link(title)
     tagline = movie["tagline"]
     overview = movie["overview"]
-    wiki_url = link[3][1]
     # print(wiki_url)
     image_url = movie["lil_poster"]
     # print(image_url)
+    wikiLinks = []
+    try:
+        wikiLinks.append(
+            link[3][0]
+        )  # This is the part that has the link to the wikipedia page
+    except:
+        wikiLinks.append("#")  # The links get out of order If I don't do this
+        print("Link doesn't exist")
+
     add_movie_tdb = Movie(
         id = id,
         title = title,
         tagline = tagline,
         overview = overview,
-        wiki_url = wiki_url,
+        wiki_url = wikiLinks,
         image_url = image_url
     )
     

@@ -9,7 +9,7 @@ function NavBar() {
   const Submit = (e) => {
     e.preventDefault();
     // navigate(`/searchy/${term}`)
-    window.location = `/searchy/${term}`;
+    window.location = `/${term}`;
   };
   return (
     <div className="topnav" id="myTopNav">

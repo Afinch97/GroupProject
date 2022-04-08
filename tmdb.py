@@ -2,7 +2,7 @@ import os
 import json 
 import requests
 from dotenv import load_dotenv, find_dotenv
-import MediaWiki
+
 
 load_dotenv(find_dotenv())
 

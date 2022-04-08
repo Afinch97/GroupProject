@@ -29,7 +29,7 @@ function SearchResult() {
   }, [query]);
   // console.log(title, ids, titles, posters, taglines);
   const Add = (item) => {
-    // console.log($event, item);
+    // console.log(item);
     fetch(`api/add/${item}`);
   };
 

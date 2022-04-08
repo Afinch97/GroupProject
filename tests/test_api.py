@@ -1,7 +1,5 @@
 from GroupProject.app import app as prj_app
-from GroupProject.tmdb import tmdb as prj_tmdb
-from GroupProject.MediaWiki import MediaWiki as prj_MediaWiki
-from GroupProject.database import database as prj_database
+
 
 # change to your local folder name
 import pytest
@@ -12,7 +10,7 @@ def app():
     prj_app.config.update({
         'TESTING': True
     })
-    yield prj_app,prj_tmdb,prj_MediaWiki,prj_database
+    yield prj_app
     
 
 @pytest.fixture()
