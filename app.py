@@ -148,6 +148,7 @@ def favorites():
     return jsonify({"no favorites"})
 
 
+
 @api.route("/search", methods=["GET"])
 @login_required
 def search():
