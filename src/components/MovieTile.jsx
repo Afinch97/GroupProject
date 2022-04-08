@@ -13,7 +13,9 @@ export async function toggleFavorite(isFavorite, id) {
 
 function MovieTile({ movie, userFavorite }) {
   const [isFavorite, setFavorite] = useState(Boolean(userFavorite));
-  const { title, image_url, id } = movie;
+  const {
+    title, image_url, id, overview,
+  } = movie;
   const buttonText = isFavorite ? 'Unfavorite' : 'Favorite';
   const handleClick = async () => {
     await toggleFavorite(isFavorite, id);
@@ -26,8 +28,7 @@ function MovieTile({ movie, userFavorite }) {
       <Card.Body>
         <Card.Title>{title}</Card.Title>
         <Card.Text>
-          Some quick example text to build on the card title and make up the bulk of
-          the card&apos;s content.
+          {overview }
         </Card.Text>
         <Button variant="primary" onClick={handleClick}>{buttonText}</Button>
       </Card.Body>

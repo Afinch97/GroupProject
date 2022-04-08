@@ -4,7 +4,7 @@ import { flaskClient } from '../fetcher';
 import MovieTile from './MovieTile';
 import Spinner from './Spinner';
 
-async function fetchFavoriteMovies() {
+export async function fetchFavoriteMovies() {
   try {
     const response = await flaskClient.get('/favorites');
     return response.data.data;
