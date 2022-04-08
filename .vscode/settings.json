@@ -1,5 +1,0 @@
-{
-  "python.formatting.provider": "none",
-  "python.linting.pylintEnabled": true,
-  "editor.formatOnSave": true
-}
