@@ -147,9 +147,6 @@ def favorites():
 
     return jsonify({"no favorites"})
 
-# "GET /api/add/634649 HTTP/1.1" 200 -
-# "GET /searchy/api/add/755437 HTTP/1.1" 200 -
-# "GET /searchy/api/add/636879 HTTP/1.1" 200 -
 
 @api.route("/search", methods=["GET"])
 @login_required
