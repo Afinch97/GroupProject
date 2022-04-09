@@ -1,8 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import {
-  Home, Register, Search, SearchResult, Movie, NavBar, AuthProvider,
-  ProfilePage, NavBar2, Login, MovieList, Favorites,
+  Home, Register, Search, SearchResult, Movie, NavBar, AuthProvider, Login,
+  ProfilePage, NavBar2,
 } from './components';
 import { Auth, RequireAuth } from './components/Auth';
 
@@ -11,16 +11,14 @@ function App() {
     <Router>
       <AuthProvider>
         <div className="App">
-          <RequireAuth>
-            <NavBar2>
+          <NavBar2>
+            <RequireAuth>
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/profile" element={<ProfilePage />} />
-                <Route path="/register" element={<Register />} />
                 <Route path="/login" element={<Login />} />
-                <Route path="/movies" element={<MovieList />} />
-                <Route path="/favorites" element={<Favorites />} />
+                <Route path="/register" element={<Register />} />
                 <Route
                   path="/searchy"
                   element={(
@@ -28,16 +26,16 @@ function App() {
                       <NavBar />
                       <Search />
                     </>
-            )}
+                )}
                 />
                 <Route
-                  path="/searchy/:query"
+                  path="/:query"
                   element={(
                     <>
                       <NavBar />
                       <SearchResult />
                     </>
-            )}
+                )}
                 />
                 <Route
                   path="/info/:movieId"
@@ -46,17 +44,17 @@ function App() {
                       <NavBar />
                       <Movie />
                     </>
-            )}
+                )}
                 />
                 <Route
                   path="*"
                   element={(
                     <Home />
-            )}
+                )}
                 />
               </Routes>
-            </NavBar2>
-          </RequireAuth>
+            </RequireAuth>
+          </NavBar2>
         </div>
       </AuthProvider>
     </Router>

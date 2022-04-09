@@ -1,5 +1,7 @@
 # Milestone 3
 
+Heroku link: https://groupprojec.herokuapp.com/
+
 ## Quickstart
 
 ```bash
@@ -23,18 +25,10 @@ deactivate
 pip freeze > requirements.txt
 ```
 
-This made the entire with a seperate flask backend and react frontend. I was not able to get the navbar to not show up in the sign up and log in pages. I could probably figure it out at some point but I don't want to turn it in a week late lol. Also couldn't re-render the comments page after deleting a comment.
+## Linting
 
-I plan on fixing everything on my own.
+We globally disabled `no-member` because of the frequency we use methods on the class created by `db = SQLAlchemy()`. Every method it seems to consider a no member warning, so we decided it was best for us to remove it from the linting process, ignore it every time we invoke methods on the sqlalchemy object. 
 
-The biggest issue so far has got to be the fething and objects. It was difficult for me to figure out at first. You can see how I got more comfortable with it going from the Movie.jsx where I had it to the point where I made a bunch of useStates for each list instead of taking the object and Comments.jsx where I got a bit more comfortable navigating around the Object as a whole.
-All of the others issues are really small issues that took too long to realize.
-Here's a list:
--Used double quotes instead of single for fetch and wasn't getting response took a very long time to realize that was the issue
--overall fetch is the greatest issue so far
--At one point it stopped rendering becasue root was in single quotes
--conflicting urls with the router
--I really can't return the numbers from query becasue it returns as a class instead of just the numbers that they are - So to fix this I had to convert the "object" to a string and then convert that into int. Literally (int(str(favs[i]))) fixed it
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
