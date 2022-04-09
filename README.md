@@ -1,4 +1,4 @@
-# Milestone 3
+# Final Project
 
 Heroku link: https://groupprojec.herokuapp.com/
 
