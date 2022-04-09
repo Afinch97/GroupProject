@@ -11,50 +11,91 @@ function App() {
     <Router>
       <AuthProvider>
         <div className="App">
-          <NavBar2>
-            <RequireAuth>
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/auth" element={<Auth />} />
-                <Route path="/profile" element={<ProfilePage />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-                <Route
-                  path="/searchy"
-                  element={(
-                    <>
-                      <NavBar />
-                      <Search />
-                    </>
-                )}
-                />
-                <Route
-                  path="/:query"
-                  element={(
-                    <>
-                      <NavBar />
-                      <SearchResult />
-                    </>
-                )}
-                />
-                <Route
-                  path="/info/:movieId"
-                  element={(
-                    <>
-                      <NavBar />
-                      <Movie />
-                    </>
-                )}
-                />
-                <Route
-                  path="*"
-                  element={(
+          <RequireAuth>
+            <Routes>
+              <Route
+                path="/"
+                element={(
+                  <>
+                    <NavBar />
                     <Home />
+                  </>
+)}
+              />
+              <Route
+                path="/auth"
+                element={(
+                  <>
+                    <NavBar />
+                    <Auth />
+                  </>
+)}
+              />
+              <Route
+                path="/profile"
+                element={(
+                  <>
+                    <NavBar />
+                    <ProfilePage />
+                  </>
+)}
+              />
+              <Route
+                path="/login"
+                element={(
+                  <>
+                    <NavBar />
+                    <Login />
+                  </>
+)}
+              />
+              <Route
+                path="/register"
+                element={(
+                  <>
+                    <NavBar />
+                    <Register />
+                  </>
+)}
+              />
+              <Route
+                path="/searchy"
+                element={(
+                  <>
+                    <NavBar />
+                    <Search />
+                  </>
                 )}
-                />
-              </Routes>
-            </RequireAuth>
-          </NavBar2>
+              />
+              <Route
+                path="/:query"
+                element={(
+                  <>
+                    <NavBar />
+                    <SearchResult />
+                  </>
+                )}
+              />
+              <Route
+                path="/info/:movieId"
+                element={(
+                  <>
+                    <NavBar />
+                    <Movie />
+                  </>
+                )}
+              />
+              <Route
+                path="*"
+                element={(
+                  <>
+                    <NavBar />
+                    <Home />
+                  </>
+                )}
+              />
+            </Routes>
+          </RequireAuth>
         </div>
       </AuthProvider>
     </Router>
