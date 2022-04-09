@@ -3,7 +3,7 @@ import json
 import os
 import re
 from multiprocessing import synchronize
-from typing import List
+from typing import List, Dict
 
 import requests
 import sqlalchemy
@@ -18,8 +18,9 @@ from werkzeug.security import check_password_hash, generate_password_hash
 import MediaWiki
 from database import db, setup_database
 from models import User, Movie, Genre
+from tastedive import get_movie_recommendations
 from tmdb import (get_favorites, get_genres, get_movie_info, get_trending, movie_info,
-                  movie_search)
+                  movie_search, single_movie_search)
 from operator import attrgetter
 
 load_dotenv(find_dotenv())
@@ -210,6 +211,35 @@ def searchResult(query: str):
     return jsonify(search_dict)
 
 
+def fetch_movie_by_title(title: str):
+    return single_movie_search(title)
+
+
+def find_movies_by_recommendations(recommendations: List[Dict[str, str]]):
+    title_dict = {movie.get('Name') : movie.get('wUrl') for movie in recommendations}
+    res = []
+    for curr_title in title_dict:
+        movie = Movie.query.filter(Movie.title==curr_title).first()
+        if movie is not None:
+            res.append(movie)
+        else:
+            search_result_info = single_movie_search(curr_title)
+            print(f'{search_result_info=}')
+            checker = Movie.query.get(search_result_info.get('id'))
+            if checker is not None:
+                res.append(checker)
+            if search_result_info and checker is None:
+                if search_result_info.get('title') == curr_title:
+                    genre_ids = search_result_info.pop('genre_ids')
+                    new_movie = Movie(**search_result_info, wiki_url=title_dict.get(curr_title))
+                    for genre in genre_ids:
+                        new_movie.genres.append(Genre.query.get(genre))
+                    db.session.add(new_movie)
+                    db.session.commit()
+                    res.append(new_movie)
+    return res
+
+
 @api.route("/movie/<id>", methods=["POST", "GET"])
 @login_required
 def viewMovie(id):
@@ -281,6 +311,14 @@ def fetch_movies():
     movies = Movie.query.all()
     return jsonify({'data': serialize_movie_list(movies)})
 
+@api.route('/recommended/movie')
+@login_required
+def get_recommended_movies():
+    favorite_movie_titles = [movie.title for movie in current_user.favorite_movies]
+    recommended = get_movie_recommendations(favorite_movie_titles)
+    recommended_movies = find_movies_by_recommendations(recommended)
+    print(recommended_movies)
+    return jsonify({'data': serialize_movie_list(recommended_movies)})
 
 @api.route('/add/<int:movie_id>', methods=["POST", "GET"])
 @login_required

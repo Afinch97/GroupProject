@@ -23,7 +23,7 @@ function MovieTile({ movie, userFavorite }) {
   };
 
   return (
-    <Card style={{ width: '18rem' }}>
+    <Card style={{ width: '18rem', margin: '0.5rem' }}>
       <Card.Img variant="top" src={`${image_url}`} />
       <Card.Body>
         <Card.Title>{title}</Card.Title>
