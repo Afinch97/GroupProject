@@ -1,5 +1,5 @@
 """
-Provides database 
+Provides database schema that is used throughout the application
 """
 
 # pylint: disable=no-member
@@ -70,10 +70,14 @@ class Movie(db.Model):
         return ", ".join([genre.name for genre in self.genres])
 
     def __repr__(self) -> str:
-        return f'Movie(id={self.id}, title={self.title}, overview={self.overview}, image_url={self.image_url})'
+        return (f'Movie(id={self.id}, title={self.title},' +
+                f'overview={self.overview}, image_url={self.image_url})')
 
 class MovieDoesNotExistInDatabase(ValueError):
-    """Error that was used for fast-fail coding, when people were learning to work with relationships"""
+    """
+    Error that was used for fast-fail coding, when people
+    were learning to work with relationships
+    """
 
 @dataclass
 class User(UserMixin, db.Model):
@@ -98,7 +102,7 @@ class User(UserMixin, db.Model):
     def update_password(self, password):
         self.password = generate_password_hash(password, method="sha256")
         db.session.commit()
-    
+
     # good function name, no need for docstring
     # pylint: disable=missing-function-docstring
     def get_id(self) -> str:
@@ -121,7 +125,7 @@ class User(UserMixin, db.Model):
                 db.session.commit()
             except ValueError:
                 pass
-                
+
 @dataclass
 class Genre(db.Model):
     """The genre for a movie. The name must be unique"""
@@ -131,8 +135,12 @@ class Genre(db.Model):
     name: str = db.Column(db.String)
 
 
+# good function name, no need for docstring
+# pylint: disable=missing-function-docstring
 def get_genre_by_name(genre_name: str) -> Optional[Genre]:
     return Genre.query.filter_by(name=genre_name).first()
 
+# good function name, no need for docstring
+# pylint: disable=missing-function-docstring
 def get_movie_by_name(movie_name: str) -> Optional[Movie]:
     return Movie.query.filter_by(title=movie_name).first()
