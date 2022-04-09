@@ -33,16 +33,16 @@ function NavBar() {
             navbarScroll
           >
             <Nav.Item>
-              <Nav.Link eventKey="/searchy">Home</Nav.Link>
+              <Nav.Link eventKey="/">Home</Nav.Link>
             </Nav.Item>
             <Nav.Item>
-              <Nav.Link eventKey="" href="https://github.com/Afinch97/GroupProject" target="_blank" rel="noreferrer">About</Nav.Link>
+              <Nav.Link eventKey="/searchy">Searchy</Nav.Link>
             </Nav.Item>
             <Nav.Item>
-              <Nav.Link eventKey="/favs">Favorites</Nav.Link>
+              <Nav.Link eventKey="/favorites">Favorites</Nav.Link>
             </Nav.Item>
             <Nav.Item>
-              <Nav.Link eventKey="/myComments">Comments</Nav.Link>
+              <Nav.Link eventKey="" href="https://github.com/Afinch97/GroupProject" target="_blank" rel="noreferrer">Github Link</Nav.Link>
             </Nav.Item>
           </Nav>
           <Form className="d-flex" onSubmit={Submit}>
@@ -56,7 +56,6 @@ function NavBar() {
             />
             <Button variant="outline-success" type="submit">Search</Button>
           </Form>
-          {' '}
           <Button variant="danger" onClick={signOut}>Logout</Button>
         </Navbar.Collapse>
       </Container>
