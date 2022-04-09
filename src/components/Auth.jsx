@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { fetchAuthStatus, flaskClient } from '../fetcher';
+import Spinner from './Spinner';
 
 const INITIAL_AUTH = {
   email: null, is_auth: false, status: 'loading', username: null,
@@ -44,7 +45,7 @@ function AuthProvider({ children }) {
         navigate(from, { replace: true });
       }
     } catch (error) {
-      setAuthStatus(UNAUTHENTICATED);
+      setAuthStatus({ ...UNAUTHENTICATED });
       setAuthError(error?.response?.data?.message);
       // setAuthError()
     }
@@ -74,16 +75,16 @@ export function useAuth() {
   return React.useContext(AuthContext);
 }
 
-const PUBLIC_URLS = ['/', '/login', '/register'];
+const PUBLIC_URLS = ['/login', '/register'];
 
 export function RequireAuth({ children }) {
   const { user } = useAuth();
   const location = useLocation();
   if (user.status === 'unauthenticated' && !PUBLIC_URLS.includes(location.pathname)) {
-    return <Navigate to="/" state={{ from: location }} replace />;
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
   if (user.status === 'loading') {
-    return <div>Loading...</div>;
+    return <Spinner />;
   }
   return children;
 }

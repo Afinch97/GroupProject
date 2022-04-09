@@ -5,8 +5,22 @@ export const flaskClient = axios.create({
 });
 
 export async function fetchAuthStatus() {
+  const response = await flaskClient.get('/auth');
+  return response.data;
+}
+
+export async function removeMovieFavorite(movieId) {
   try {
-    const response = await flaskClient.get('/auth');
+    const response = await flaskClient.get(`/remove/${movieId}`);
+    return response.data;
+  } catch (error) {
+    return error;
+  }
+}
+
+export async function addMovieFavorite(movieId) {
+  try {
+    const response = await flaskClient.get(`/add/${movieId}`);
     return response.data;
   } catch (error) {
     return error;
