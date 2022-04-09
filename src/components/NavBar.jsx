@@ -20,40 +20,40 @@ function NavBar() {
   };
   return (
     <Navbar bg="light" expand="lg">
-    <Container fluid>
+      <Container fluid>
       <Navbar.Toggle aria-controls="navbarScroll" />
       <Navbar.Collapse id="navbarScroll">
-      <Nav variant="pills" defaultActiveKey={location.pathname}  onSelect={handleSelect} className="me-auto my-2 my-lg-0"
+        <Nav variant="pills" defaultActiveKey={location.pathname} onSelect={handleSelect} className="me-auto my-2 my-lg-0"
         style={{ maxHeight: '100px' }}
-        navbarScroll >
-          <Nav.Item>
+        navbarScroll>
+        <Nav.Item>
           <Nav.Link eventKey="/searchy">Home</Nav.Link>
-          </Nav.Item>
-          <Nav.Item>
+        </Nav.Item>
+        <Nav.Item>
           <Nav.Link eventKey="" href="https://github.com/Afinch97/GroupProject" target="_blank" rel="noreferrer">About</Nav.Link>
-          </Nav.Item>
-          <Nav.Item>
+        </Nav.Item>
+        <Nav.Item>
           <Nav.Link eventKey="/favs">Favorites</Nav.Link>
-          </Nav.Item>
-          <Nav.Item>
+        </Nav.Item>
+        <Nav.Item>
           <Nav.Link eventKey="/myComments">Comments</Nav.Link>
-          </Nav.Item>
+        </Nav.Item>
         </Nav>
         <Form className="d-flex" onSubmit={Submit}>
-        <FormControl
-          type="search"
-          placeholder="Search"
-          className="me-2"
-          aria-label="Search"
-          onChange={(e) => setTerm(e.target.value)} 
-          value={term}
-        />
-      <Button variant="outline-success" type="submit">Search</Button>
-      </Form>
-      {' '}
-      <Button variant="danger" onClick={signOut}>Logout</Button>
+          <FormControl
+            type="search"
+            placeholder="Search"
+            className="me-2"
+            aria-label="Search"
+            onChange={(e) => setTerm(e.target.value)} 
+            value={term}
+          />
+          <Button variant="outline-success" type="submit">Search</Button>
+        </Form>
+        {' '}
+        <Button variant="danger" onClick={signOut}>Logout</Button>
       </Navbar.Collapse>
-    </Container>
+      </Container>
     </Navbar>
   );
 }
