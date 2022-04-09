@@ -5,7 +5,7 @@ export const flaskClient = axios.create({
 });
 
 export async function fetchAuthStatus() {
-  const response = await flaskClient.get('/auth');
+  const response = await axios.get('/api/auth');
   return response.data;
 }
 

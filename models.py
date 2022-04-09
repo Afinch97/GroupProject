@@ -1,16 +1,20 @@
-# pylint: skip-file
+"""
+Provides database schema that is used throughout the application
+"""
 
-from typing import List, Optional
-from flask_login import UserMixin
-# from GroupProject.database import db
-from database import db
+# pylint: disable=no-member
+
 from dataclasses import dataclass
-from werkzeug.security import generate_password_hash, check_password_hash
+from typing import List, Optional
 
+from flask_login import UserMixin
+from werkzeug.security import check_password_hash, generate_password_hash
 
+# pylint: disable=import-error
+from database import db
 
-
-
+# doc string is not pointless, cannot put inside function
+# pylint: disable=pointless-string-statement
 """N-M relationship between users and movies"""
 favorite_relationship = db.Table(
     "movie_favorites",
@@ -19,6 +23,8 @@ favorite_relationship = db.Table(
     db.Column("user_id", db.ForeignKey("user.username"), primary_key=True),
 )
 
+# doc string is not pointless, cannot put inside function
+# pylint: disable=pointless-string-statement
 """N-M relationship between movies and genres."""
 genre_relationship = db.Table(
     "movie_genres",
@@ -27,6 +33,8 @@ genre_relationship = db.Table(
     db.Column("movie_id", db.ForeignKey("movie.id"), primary_key=True),
 )
 
+# this database schema is well designed
+# pylint: disable=too-many-instance-attributes
 @dataclass
 class Movie(db.Model):
     """
@@ -35,6 +43,8 @@ class Movie(db.Model):
     """
 
     __tablename__ = "movie"
+    # following database conventions of naming attribute id
+    # pylint: disable=invalid-name
     id: int = db.Column(db.Integer, index=True, unique=True, primary_key=True)
     fans: List['User'] = db.relationship(
         "User", secondary=favorite_relationship, back_populates="favorite_movies"
@@ -48,6 +58,7 @@ class Movie(db.Model):
         'Genre', secondary=genre_relationship, backref=db.backref('movies')
     )
     def add_genre(self, genre_name: str):
+        """Given a genre name, create a relationship between that genre and the current movie"""
         genre = Genre.query.filter_by(name=genre_name).first()
         if genre is None:
             raise ValueError(f'Genre with name {genre_name} does not exist in database')
@@ -59,10 +70,14 @@ class Movie(db.Model):
         return ", ".join([genre.name for genre in self.genres])
 
     def __repr__(self) -> str:
-        return f'Movie(id={self.id}, title={self.title}, overview={self.overview}, image_url={self.image_url})'
+        return (f'Movie(id={self.id}, title={self.title},' +
+                f'overview={self.overview}, image_url={self.image_url})')
 
 class MovieDoesNotExistInDatabase(ValueError):
-    pass
+    """
+    Error that was used for fast-fail coding, when people
+    were learning to work with relationships
+    """
 
 @dataclass
 class User(UserMixin, db.Model):
@@ -82,10 +97,14 @@ class User(UserMixin, db.Model):
         """Helper method to validate password against the stored hashed password"""
         return check_password_hash(self.password, password)
 
+    # good function name, no need for docstring
+    # pylint: disable=missing-function-docstring
     def update_password(self, password):
         self.password = generate_password_hash(password, method="sha256")
         db.session.commit()
-    
+
+    # good function name, no need for docstring
+    # pylint: disable=missing-function-docstring
     def get_id(self) -> str:
         """Used for Flask Login"""
         return self.username
@@ -106,16 +125,22 @@ class User(UserMixin, db.Model):
                 db.session.commit()
             except ValueError:
                 pass
-                
+
 @dataclass
 class Genre(db.Model):
     """The genre for a movie. The name must be unique"""
+    # following database conventions of naming attribute id
+    # pylint: disable=invalid-name
     id: int = db.Column(db.Integer, primary_key=True)
     name: str = db.Column(db.String)
 
 
+# good function name, no need for docstring
+# pylint: disable=missing-function-docstring
 def get_genre_by_name(genre_name: str) -> Optional[Genre]:
     return Genre.query.filter_by(name=genre_name).first()
 
+# good function name, no need for docstring
+# pylint: disable=missing-function-docstring
 def get_movie_by_name(movie_name: str) -> Optional[Movie]:
     return Movie.query.filter_by(title=movie_name).first()

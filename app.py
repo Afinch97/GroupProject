@@ -1,36 +1,30 @@
+"""
+The main application of for our application. Handles all requests, both to
+serve the react page, and the api calls the reac tapp uses.
+"""
 # pylint: disable=no-member
-import json
 import os
-import re
-from multiprocessing import synchronize
-from typing import List, Dict
-
-import requests
-import sqlalchemy
-from dotenv import find_dotenv, load_dotenv
-from flask import (Blueprint, Flask, flash, jsonify, redirect, render_template,
-                   request, url_for)
-from flask_login import (LoginManager, UserMixin, current_user, login_required,
-                         login_user, logout_user)
-from flask_sqlalchemy import SQLAlchemy
-from werkzeug.security import check_password_hash, generate_password_hash
-
-import MediaWiki
-from database import db, setup_database
-from models import User, Movie, Genre
-from tastedive import get_movie_recommendations
-from tmdb import (get_favorites, get_genres, get_movie_info, get_trending, movie_info,
-                  movie_search, single_movie_search)
 from operator import attrgetter
+from typing import Dict, List
 
-# from GroupProject.MediaWiki import get_wiki_link
-# from GroupProject.database import db, setup_database
-# from GroupProject.models import User, Movie, Genre
-# from GroupProject.tmdb import (get_favorites, get_genres, get_movie_info, get_trending, movie_info,movie_search)
+from dotenv import find_dotenv, load_dotenv
+from flask import Blueprint, Flask, flash, jsonify, render_template, request
+from flask_login import (LoginManager, current_user, login_required,
+                         login_user, logout_user)
+from werkzeug.security import generate_password_hash
+
+# pylint: disable=import-error
+import media_wiki
+from database import db, setup_database
+from models import Genre, Movie, User
+from tastedive import get_movie_recommendations
+from tmdb import (get_genres, get_trending, movie_info, movie_search,
+                  single_movie_search)
 
 load_dotenv(find_dotenv())
 
 def create_app():
+    """Factory method to create flask app"""
     flask_app = Flask(__name__)
     flask_app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0
     flask_app.config["SECRET_KEY"] = os.getenv('SECRET_KEY',"secret-key-goes-here")
@@ -42,7 +36,6 @@ def create_app():
     # Gets rid of a warning
     flask_app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     setup_database(flask_app)
-    # db = SQLAlchemy(flask_app, session_options={"autocommit": True})
     return flask_app
 
 app = create_app()
@@ -55,9 +48,12 @@ login_manager.init_app(app)
 
 @login_manager.user_loader
 def load_user(username):
+    """Get user in the database that has matching username"""
     return User.query.get(username)
 
 
+# good function name, no need for docstring
+# pylint: disable=missing-function-docstring
 @app.route('/login')
 def login_page():
     return render_template('index.html')
@@ -72,20 +68,13 @@ TEMPLATE_FOLDER = './static/react' if PYTHON_ENV == 'production' else "./static/
 # from Milestone 2 without interfering with the functionality here.
 api = Blueprint("api", __name__, template_folder=TEMPLATE_FOLDER, url_prefix="/api")
 
-# @app.route("/", defaults={"path": ""})
-# @app.route("/<path:path>")
-# def catch_all_route(path):
-#     return render_template("index.html")
-
 def get_auth_status():
-    AUTHENTICATED = 'authenticated'
-    UNAUTHENTICATED = 'unauthenticated'
-    STATUS = 'status'
-    IS_AUTH = 'is_auth'
-    response = {STATUS: UNAUTHENTICATED, IS_AUTH: False, 'email': None, 'username': None}
+    status = 'status'
+    is_auth = 'is_auth'
+    response = {status: 'unauthenticated', is_auth: False, 'email': None, 'username': None}
     if current_user.is_authenticated:
-        response[STATUS] = AUTHENTICATED
-        response[IS_AUTH] = True
+        response[status] = 'authenticated'
+        response[is_auth] = True
         response['username'] = current_user.username
         response['email'] = current_user.email
     return response
@@ -128,7 +117,8 @@ def register():
     if user:
 
         return jsonify({"error":"User already exists"})
-    new_user = User(email=email, username=name, password=generate_password_hash(password, method='sha256'))
+    new_user = User(email=email, username=name,
+                    password=generate_password_hash(password, method='sha256'))
     # db.session.begin()
     db.session.add(new_user)
     db.session.commit()
@@ -159,16 +149,16 @@ def search():
     ids = movies["ids"]
     taglines = movies["taglines"]
 
-    wikiLinks = []
-    for i in range(len(titles)):
-        links = MediaWiki.get_wiki_link(titles[i])
+    wiki_links = []
+    for title in titles:
+        links = media_wiki.get_wiki_link(title)
         try:
-            wikiLinks.append(
+            wiki_links.append(
                 links[3][0]
             )  # This is the part that has the link to the wikipedia page
-        except:
-            wikiLinks.append("#")  # The links get out of order If I don't do this
-            print("Link doesn't exist")
+        except IndexError:
+            wiki_links.append("#")  # The links get out of order If I don't do this
+            # print("Link doesn't exist")
     search_dict = {
         "title": title,
         "genres": data,
@@ -177,14 +167,14 @@ def search():
         "posters": posters,
         "taglines": taglines,
         "ids": ids,
-        "wikiLinks": wikiLinks,
+        "wikiLinks": wiki_links,
     }
     return jsonify(search_dict)
 
 
 @api.route("/search/<query>", methods=["GET"])
 @login_required
-def searchResult(query: str):
+def search_result(query: str):
     data = get_genres()
     title = query
     movies = movie_search(query)
@@ -195,16 +185,15 @@ def searchResult(query: str):
     ids = movies["ids"]
     taglines = movies["taglines"]
 
-    wikiLinks = []
-    for i in range(len(titles)):
-        links = MediaWiki.get_wiki_link(titles[i])
+    wiki_links = []
+    for title in titles:
+        links = media_wiki.get_wiki_link(title)
         try:
-            wikiLinks.append(
+            wiki_links.append(
                 links[3][0]
             )  # This is the part that has the link to the wikipedia page
-        except:
-            wikiLinks.append("#")  # The links get out of order If I don't do this
-            print("Link doesn't exist")
+        except IndexError:
+            wiki_links.append("#")  # The links get out of order If I don't do this
     search_dict = {
         "title": title,
         "genres": data,
@@ -213,7 +202,7 @@ def searchResult(query: str):
         "posters": posters,
         "taglines": taglines,
         "ids": ids,
-        "wikiLinks": wikiLinks,
+        "wikiLinks": wiki_links,
     }
     return jsonify(search_dict)
 
@@ -247,20 +236,10 @@ def find_movies_by_recommendations(recommendations: List[Dict[str, str]]):
     return res
 
 
-@api.route("/movie/<id>", methods=["POST", "GET"])
+@api.route("/movie/<movie_id>", methods=["POST", "GET"])
 @login_required
-def viewMovie(id):
-    (title, genres, poster, tagline, overview, release_date, lil_poster) = movie_info(id)
-    # if request.method == "POST":
-    #     data = request.get_json()
-    #     rating = data["rating"]
-    #     textReview = data["textReview"]
-    #     new_rating = Reviews(movie_id=int(id), user=current_user.name, rating=rating, text=textReview)
-    #     db.session.begin()
-    #     db.session.add(new_rating)
-    #     db.session.commit()
-
-    # reviews = Reviews.query.filter_by(movie_id=id).all()
+def view_movie(movie_id):
+    (title, genres, poster, tagline, overview, release_date, _) = movie_info(movie_id)
     reviews = []
 
     if reviews:
@@ -272,7 +251,7 @@ def viewMovie(id):
             users.append(i.__dict__.get("user"))
             ratings.append(i.__dict__.get("rating"))
             texts.append(i.__dict__.get("text"))
-        viewMovie_dict = {
+        view_movie_dict = {
             "current_user": current_user.name,
             "title": title,
             "genres": genres,
@@ -287,8 +266,8 @@ def viewMovie(id):
             "reviews": "true",
             "rev_length": len(ratings),
         }
-        return jsonify(viewMovie_dict)
-    viewMovie_dict = {
+        return jsonify(view_movie_dict)
+    view_movie_dict = {
         "current_user": current_user.name,
         "title": title,
         "genres": genres,
@@ -299,7 +278,7 @@ def viewMovie(id):
         "id": id,
         "reviews": "false",
     }
-    return jsonify(viewMovie_dict)
+    return jsonify(view_movie_dict)
 
 def serialize_movie(movie: Movie):
     attributes = ['title', 'id', 'overview', 'tagline', 'image_url', 'wiki_url']
@@ -325,60 +304,18 @@ def get_recommended_movies():
 
 @api.route('/add/<int:movie_id>', methods=["POST", "GET"])
 @login_required
-def addMovie(movie_id: int):
+def add_movie(movie_id: int):
     current_user.add_favorite_movie(movie_id)
     return jsonify("Movie is added")
 
 @api.route('/remove/<int:movie_id>', methods=["POST","GET"])
 @login_required
-def removeMovie(movie_id: int):
+def remove_movie(movie_id: int):
     movie = Movie.query.get(movie_id)
     if movie is None:
         return jsonify({'message': 'Movie does not exist'}), 404
     current_user.remove_favorite_movie(movie_id)
     return jsonify(serialize_movie(movie))
-
-# @api.route('/reviewbbgurl', methods=["GET"])
-# @login_required
-# def gimme_my_reviews():
-#     name = current_user.name
-#     reviews = Reviews.query.filter_by(user=name).all()
-#     if reviews:
-#         my_reviews=[]
-#         ratings=[]
-#         texts=[]
-#         movie_ids=[]
-#         movies={}
-#         for i in reviews:
-#             print (i.__dict__)
-#             my_reviews.append(i.__dict__.get('id'))
-#             ratings.append(i.__dict__.get('rating'))
-#             texts.append(i.__dict__.get('text'))
-#             movie_ids.append(i.__dict__.get('movie_id'))
-#             (title, genres, poster, tagline, overview, release_date, lil_poster) = movie_info(i.__dict__.get('movie_id'))
-#             movies[i.__dict__.get('movie_id')] = (title, lil_poster)
-#         view_ratings_dicts = {
-#             "review_ids": my_reviews,
-#             "current_user": current_user.name,
-#             "texts": texts,
-#             "ratings": ratings,
-#             "movies": movies,
-#             "movie_ids": movie_ids,
-#             "length":len(ratings)
-#         }
-#         return jsonify(view_ratings_dicts)
-#     return jsonify({"error":"you got no comments bro"})
-
-# @bp.route('/delete_comment/<e>', methods=["GET"])
-# def remove_that_review(e):
-#     reviews = Reviews.query.filter_by(id=e).first()
-#     if reviews is None:
-#         return (jsonify("Review does not exist"))
-#     db.session.begin()
-#     db.session.delete(reviews)
-#     db.session.commit()
-#     return (jsonify("Removed from Reviews"))
-
 
 
 @api.route("/logout", methods=['POST'])
