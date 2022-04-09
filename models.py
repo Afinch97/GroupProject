@@ -95,9 +95,6 @@ class User(UserMixin, db.Model):
         if movie is not None:
             self.favorite_movies.append(movie)
             db.session.commit()
-        else:
-            raise MovieDoesNotExistInDatabase('Movie does not exist in database.'
-                    + 'The movie must be saved in the database before a user can favorite it!')
 
     def remove_favorite_movie(self, movie_id: int) -> None:
         """Remove user's rating for the movie with the given movie_id"""
@@ -108,12 +105,6 @@ class User(UserMixin, db.Model):
                 db.session.commit()
             except ValueError:
                 pass
-                raise ValueError('You tried to remove a movie which is not in the current_users favorite_movies')
-        else:
-            raise MovieDoesNotExistInDatabase('Movie does not exist in database.'
-                    + 'The movie must be saved in the database before a user can favorite it!')
-
-   
                 
 @dataclass
 class Genre(db.Model):

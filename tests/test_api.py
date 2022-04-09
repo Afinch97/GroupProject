@@ -1,4 +1,6 @@
 from GroupProject.app import app as prj_app
+
+
 # change to your local folder name
 import pytest
 
@@ -22,5 +24,5 @@ def runner(app):
 
 
 def test_login(client):
-    resp = client.get("/login")
+    resp = client.get("/")
     assert resp.status_code == 200

@@ -15,7 +15,7 @@ from flask_login import (LoginManager, UserMixin, current_user, login_required,
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import check_password_hash, generate_password_hash
 
-import MediaWiki
+from MediaWiki import get_wiki_link
 from database import db, setup_database
 from models import User, Movie, Genre
 from tastedive import get_movie_recommendations
@@ -137,8 +137,9 @@ def favorites():
     return jsonify({'data': serialize_movie_list(current_user.favorite_movies)})
 
 
+
 @api.route("/search", methods=["GET"])
-# @login_required
+@login_required
 def search():
     data = get_genres()
     movies = get_trending()
@@ -155,7 +156,7 @@ def search():
     taglines = movies["taglines"]
     wikiLinks = []
     for i in range(len(titles)):
-        links = MediaWiki.get_wiki_link(titles[i])
+        links = get_wiki_link(titles[i])
         try:
             wikiLinks.append(
                 links[3][0]
@@ -190,7 +191,7 @@ def searchResult(query: str):
 
     wikiLinks = []
     for i in range(len(titles)):
-        links = MediaWiki.get_wiki_link(titles[i])
+        links = get_wiki_link(titles[i])
         try:
             wikiLinks.append(
                 links[3][0]
@@ -323,23 +324,38 @@ def get_recommended_movies():
 @api.route('/add/<int:movie_id>', methods=["POST", "GET"])
 @login_required
 def addMovie(movie_id: int):
-    movie = Movie.query.get(movie_id)
-    if movie is None:
-        movie_details = get_movie_info(movie_id)
-        link = MediaWiki.get_wiki_link(movie_details['title'])
-        wiki_url = link[3][1]
+    print("hello")
+    movie = get_movie_info(movie_id)
+    print(movie_id)
+    id = movie_id
+    title = movie["title"]
+    link = get_wiki_link(title)
+    tagline = movie["tagline"]
+    overview = movie["overview"]
+    # print(wiki_url)
+    image_url = movie["lil_poster"]
+    # print(image_url)
+    wikiLinks = []
+    try:
+        wikiLinks.append(
+            link[3][0]
+        )  # This is the part that has the link to the wikipedia page
+    except:
+        wikiLinks.append("#")  # The links get out of order If I don't do this
+        print("Link doesn't exist")
 
-        movie = Movie(
-            id = movie_details['id'],
-            title = movie_details['title'],
-            tagline = movie_details['tagline'],
-            overview = movie_details['overview'],
-            wiki_url = wiki_url,
-            image_url = movie_details['lil_poster']
-        )
-        db.session.add(movie)
-        db.session.commit()
-    current_user.add_favorite_movie(movie.id)
+    add_movie_tdb = Movie(
+        id = id,
+        title = title,
+        tagline = tagline,
+        overview = overview,
+        wiki_url = wikiLinks,
+        image_url = image_url
+    )
+    
+    db.session.add(add_movie_tdb)
+    db.session.commit()
+    current_user.add_favorite_movie(movie_id)
     return jsonify("Movie is added")
 
 @api.route('/remove/<int:movie_id>', methods=["POST", "GET"])
