@@ -108,6 +108,31 @@ def movie_search(query):
         'taglines': list(taglines),
     }
 
+def get_tagline_for_movie(movie_id: int):
+    TAG_URL = 'https://api.themoviedb.org/3/movie/'+ str(movie_id) +'?api_key='+os.getenv('TMDB_KEY')+'&language=en-US'
+    response2 = requests.get(TAG_URL)
+    data2 =response2.json()
+    tagline = data2['tagline']
+    return tagline
+
+def single_movie_search(query):
+    SEARCH_URL = 'https://api.themoviedb.org/3/search/movie?api_key='+os.getenv('TMDB_KEY')+'&language=en-US&query='+ query +'&page=1&include_adult=false'
+    response = requests.get(SEARCH_URL)
+    data = response.json()
+    movies = data['results']
+    if not movies:
+        return {}
+    movie = movies[0]
+    return {
+        'title': movie.get('title'),
+        'overview': movie.get('overview'),
+        'image_url': POSTER_PATH +  movie.get('poster_path'),
+        'id': movie.get('id'),
+        'tagline': get_tagline_for_movie(movie.get('id')),
+        "genre_ids": movie.get('genre_ids')
+    }
+
+
 def movie_info(id):
     INFO_URL = 'https://api.themoviedb.org/3/movie/'+str(id)+'?api_key='+str(os.getenv('TMDB_KEY'))+'&language=en-US'
     info = requests.get(INFO_URL)

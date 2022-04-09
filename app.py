@@ -3,6 +3,7 @@ import json
 import os
 import re
 from multiprocessing import synchronize
+from typing import List, Dict
 
 import requests
 import sqlalchemy
@@ -17,8 +18,10 @@ from werkzeug.security import check_password_hash, generate_password_hash
 import MediaWiki
 from database import db, setup_database
 from models import User, Movie, Genre
+from tastedive import get_movie_recommendations
 from tmdb import (get_favorites, get_genres, get_movie_info, get_trending, movie_info,
-                  movie_search)
+                  movie_search, single_movie_search)
+from operator import attrgetter
 
 load_dotenv(find_dotenv())
 
@@ -49,13 +52,20 @@ login_manager.init_app(app)
 def load_user(username):
     return User.query.get(username)
 
-# login_manager.login_view = 'api.login'
 
+@app.route('/login')
+def login_page():
+    return render_template('index.html')
+
+login_manager.login_view = 'login_page'
+
+PYTHON_ENV = os.getenv('PYTHON_ENV', 'production')
+TEMPLATE_FOLDER = './static/react' if PYTHON_ENV == 'production' else "./static/parcel"
 # set up a separate route to serve the index.html file generated
 # by create-react-app/npm run build.
 # By doing this, we make it so you can paste in all your old app routes
 # from Milestone 2 without interfering with the functionality here.
-api = Blueprint("api", __name__, template_folder="./static/react", url_prefix="/api")
+api = Blueprint("api", __name__, template_folder=TEMPLATE_FOLDER, url_prefix="/api")
 
 # @app.route("/", defaults={"path": ""})
 # @app.route("/<path:path>")
@@ -78,6 +88,9 @@ def get_auth_status():
 @api.route('/auth')
 def auth_check():
     """Endpoint for testing authentication status of user"""
+    auth_status = get_auth_status()
+    if not auth_status['is_auth']:
+        return jsonify(auth_status), 401
     return jsonify(get_auth_status())
 
 
@@ -121,31 +134,7 @@ def register():
 @api.route("/favorites", methods=["GET", "POST"])
 @login_required
 def favorites():
-    # fav_movies = Favorites.query.filter_by(email=current_user.email).all()
-    fav_movies = current_user.favorite_movies
-    print(fav_movies)
-    favs = fav_movies
-    if favs:
-        fav_length = len(favs)
-        print(fav_length)
-        favorites = get_favorites(favs)
-        fav_titles = favorites["fav_titles"]
-        fav_posters = favorites["fav_posters"]
-        fav_ids = favorites["fav_ids"]
-        fav_taglines = favorites["fav_taglines"]
-        print(favorites)
-
-        fav_dict = {
-            "length": fav_length,
-            "titles": fav_titles,
-            "posters": fav_posters,
-            "taglines": fav_taglines,
-            "ids": fav_ids,
-        }
-        print(fav_dict)
-        return jsonify(fav_dict)
-
-    return jsonify({"no favorites"})
+    return jsonify({'data': serialize_movie_list(current_user.favorite_movies)})
 
 
 @api.route("/search", methods=["GET"])
@@ -222,6 +211,35 @@ def searchResult(query: str):
     return jsonify(search_dict)
 
 
+def fetch_movie_by_title(title: str):
+    return single_movie_search(title)
+
+
+def find_movies_by_recommendations(recommendations: List[Dict[str, str]]):
+    title_dict = {movie.get('Name') : movie.get('wUrl') for movie in recommendations}
+    res = []
+    for curr_title in title_dict:
+        movie = Movie.query.filter(Movie.title==curr_title).first()
+        if movie is not None:
+            res.append(movie)
+        else:
+            search_result_info = single_movie_search(curr_title)
+            print(f'{search_result_info=}')
+            checker = Movie.query.get(search_result_info.get('id'))
+            if checker is not None:
+                res.append(checker)
+            if search_result_info and checker is None:
+                if search_result_info.get('title') == curr_title:
+                    genre_ids = search_result_info.pop('genre_ids')
+                    new_movie = Movie(**search_result_info, wiki_url=title_dict.get(curr_title))
+                    for genre in genre_ids:
+                        new_movie.genres.append(Genre.query.get(genre))
+                    db.session.add(new_movie)
+                    db.session.commit()
+                    res.append(new_movie)
+    return res
+
+
 @api.route("/movie/<id>", methods=["POST", "GET"])
 @login_required
 def viewMovie(id):
@@ -280,39 +298,58 @@ def viewMovie(id):
     }
     return jsonify(viewMovie_dict)
 
+def serialize_movie(movie: Movie):
+    attributes = ['title', 'id', 'overview', 'tagline', 'image_url', 'wiki_url']
+    return dict(zip(attributes, attrgetter(*attributes)(movie)))
+
+def serialize_movie_list(movies: List[Movie]):
+    return  [serialize_movie(movie) for movie in movies]
+    
+
+@api.route('/movies')
+def fetch_movies():
+    movies = Movie.query.all()
+    return jsonify({'data': serialize_movie_list(movies)})
+
+@api.route('/recommended/movie')
+@login_required
+def get_recommended_movies():
+    favorite_movie_titles = [movie.title for movie in current_user.favorite_movies]
+    recommended = get_movie_recommendations(favorite_movie_titles)
+    recommended_movies = find_movies_by_recommendations(recommended)
+    print(recommended_movies)
+    return jsonify({'data': serialize_movie_list(recommended_movies)})
+
 @api.route('/add/<int:movie_id>', methods=["POST", "GET"])
 @login_required
 def addMovie(movie_id: int):
-    movie = get_movie_info(movie_id)
-    # print(movie_id)
-    id = movie_id
-    title = movie["title"]
-    link = MediaWiki.get_wiki_link(title)
-    tagline = movie["tagline"]
-    overview = movie["overview"]
-    wiki_url = link[3][1]
-    # print(wiki_url)
-    image_url = movie["lil_poster"]
-    # print(image_url)
-    add_movie_tdb = Movie(
-        id = id,
-        title = title,
-        tagline = tagline,
-        overview = overview,
-        wiki_url = wiki_url,
-        image_url = image_url
-    )
-    
-    db.session.add(add_movie_tdb)
-    db.session.commit()
-    current_user.add_favorite_movie(movie_id)
+    movie = Movie.query.get(movie_id)
+    if movie is None:
+        movie_details = get_movie_info(movie_id)
+        link = MediaWiki.get_wiki_link(movie_details['title'])
+        wiki_url = link[3][1]
+
+        movie = Movie(
+            id = movie_details['id'],
+            title = movie_details['title'],
+            tagline = movie_details['tagline'],
+            overview = movie_details['overview'],
+            wiki_url = wiki_url,
+            image_url = movie_details['lil_poster']
+        )
+        db.session.add(movie)
+        db.session.commit()
+    current_user.add_favorite_movie(movie.id)
     return jsonify("Movie is added")
 
 @api.route('/remove/<int:movie_id>', methods=["POST", "GET"])
 @login_required
 def removeMovie(movie_id: int):
+    movie = Movie.query.get(movie_id)
+    if movie is None:
+        return jsonify({'message': 'Movie does not exist'}), 404
     current_user.remove_favorite_movie(movie_id)
-    return jsonify("Removed from Favorites")
+    return jsonify(serialize_movie(movie))
 
 # @api.route('/reviewbbgurl', methods=["GET"])
 # @login_required
