@@ -24,9 +24,9 @@ def runner(app):
     return app.test_cli_runner()
 
 
-# def test_login_page(client):
-#     resp = client.get("/")
-#     assert resp.status_code == 200
+def test_login_page(client):
+    resp = client.get("/")
+    assert resp.status_code == 200
 
 # def test_login(client):
 #     with client:
