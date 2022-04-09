@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import {
   Home, Register, Search, SearchResult, Movie, NavBar, AuthProvider,
-  ProfilePage, NavBar2, Login, MovieList, Favorites,
+  ProfilePage,
 } from './components';
 import { Auth, RequireAuth } from './components/Auth';
 
