@@ -15,7 +15,7 @@ from flask_login import (LoginManager, UserMixin, current_user, login_required,
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from MediaWiki import get_wiki_link
+import MediaWiki
 from database import db, setup_database
 from models import User, Movie, Genre
 from tastedive import get_movie_recommendations
@@ -23,12 +23,17 @@ from tmdb import (get_favorites, get_genres, get_movie_info, get_trending, movie
                   movie_search, single_movie_search)
 from operator import attrgetter
 
+# from GroupProject.MediaWiki import get_wiki_link
+# from GroupProject.database import db, setup_database
+# from GroupProject.models import User, Movie, Genre
+# from GroupProject.tmdb import (get_favorites, get_genres, get_movie_info, get_trending, movie_info,movie_search)
+
 load_dotenv(find_dotenv())
 
 def create_app():
     flask_app = Flask(__name__)
     flask_app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0
-    flask_app.config["SECRET_KEY"] = os.getenv('SECRET_KEY', "secret-key-goes-here")
+    flask_app.config["SECRET_KEY"] = os.getenv('SECRET_KEY',"secret-key-goes-here")
     flask_app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
     if flask_app.config["SQLALCHEMY_DATABASE_URI"].startswith("postgres://"):
         flask_app.config["SQLALCHEMY_DATABASE_URI"] = flask_app.config[
@@ -137,9 +142,8 @@ def favorites():
     return jsonify({'data': serialize_movie_list(current_user.favorite_movies)})
 
 
-
 @api.route("/search", methods=["GET"])
-@login_required
+# @login_required
 def search():
     data = get_genres()
     movies = get_trending()
@@ -154,9 +158,10 @@ def search():
     posters = movies["posters"]
     ids = movies["ids"]
     taglines = movies["taglines"]
+
     wikiLinks = []
     for i in range(len(titles)):
-        links = get_wiki_link(titles[i])
+        links = MediaWiki.get_wiki_link(titles[i])
         try:
             wikiLinks.append(
                 links[3][0]
@@ -183,6 +188,7 @@ def searchResult(query: str):
     data = get_genres()
     title = query
     movies = movie_search(query)
+
     titles = movies["titles"]
     overviews = movies["overviews"]
     posters = movies["posters"]
@@ -191,7 +197,7 @@ def searchResult(query: str):
 
     wikiLinks = []
     for i in range(len(titles)):
-        links = get_wiki_link(titles[i])
+        links = MediaWiki.get_wiki_link(titles[i])
         try:
             wikiLinks.append(
                 links[3][0]
@@ -244,11 +250,7 @@ def find_movies_by_recommendations(recommendations: List[Dict[str, str]]):
 @api.route("/movie/<id>", methods=["POST", "GET"])
 @login_required
 def viewMovie(id):
-    print(id)
     (title, genres, poster, tagline, overview, release_date, lil_poster) = movie_info(id)
-    print(current_user)
-    print("hello")
-    print(movie_info(id))
     # if request.method == "POST":
     #     data = request.get_json()
     #     rating = data["rating"]
@@ -260,7 +262,7 @@ def viewMovie(id):
 
     # reviews = Reviews.query.filter_by(movie_id=id).all()
     reviews = []
-    print(id)
+
     if reviews:
         users = []
         ratings = []
@@ -271,7 +273,7 @@ def viewMovie(id):
             ratings.append(i.__dict__.get("rating"))
             texts.append(i.__dict__.get("text"))
         viewMovie_dict = {
-            "current_user": current_user,
+            "current_user": current_user.name,
             "title": title,
             "genres": genres,
             "poster": poster,
@@ -287,7 +289,7 @@ def viewMovie(id):
         }
         return jsonify(viewMovie_dict)
     viewMovie_dict = {
-        "current_user": current_user,
+        "current_user": current_user.name,
         "title": title,
         "genres": genres,
         "poster": poster,
@@ -305,7 +307,7 @@ def serialize_movie(movie: Movie):
 
 def serialize_movie_list(movies: List[Movie]):
     return  [serialize_movie(movie) for movie in movies]
-    
+
 
 @api.route('/movies')
 def fetch_movies():
@@ -324,41 +326,10 @@ def get_recommended_movies():
 @api.route('/add/<int:movie_id>', methods=["POST", "GET"])
 @login_required
 def addMovie(movie_id: int):
-    print("hello")
-    movie = get_movie_info(movie_id)
-    print(movie_id)
-    id = movie_id
-    title = movie["title"]
-    link = get_wiki_link(title)
-    tagline = movie["tagline"]
-    overview = movie["overview"]
-    # print(wiki_url)
-    image_url = movie["lil_poster"]
-    # print(image_url)
-    wikiLinks = []
-    try:
-        wikiLinks.append(
-            link[3][0]
-        )  # This is the part that has the link to the wikipedia page
-    except:
-        wikiLinks.append("#")  # The links get out of order If I don't do this
-        print("Link doesn't exist")
-
-    add_movie_tdb = Movie(
-        id = id,
-        title = title,
-        tagline = tagline,
-        overview = overview,
-        wiki_url = wikiLinks,
-        image_url = image_url
-    )
-    
-    db.session.add(add_movie_tdb)
-    db.session.commit()
     current_user.add_favorite_movie(movie_id)
     return jsonify("Movie is added")
 
-@api.route('/remove/<int:movie_id>', methods=["POST", "GET"])
+@api.route('/remove/<int:movie_id>', methods=["POST","GET"])
 @login_required
 def removeMovie(movie_id: int):
     movie = Movie.query.get(movie_id)

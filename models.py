@@ -2,6 +2,7 @@
 
 from typing import List, Optional
 from flask_login import UserMixin
+# from GroupProject.database import db
 from database import db
 from dataclasses import dataclass
 from werkzeug.security import generate_password_hash, check_password_hash
