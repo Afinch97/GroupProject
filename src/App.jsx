@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import {
-  Home, Register, Search, SearchResult, Movie, NavBar, AuthProvider,
+  Home, Register, Search, SearchResult, Movie, NavBar, AuthProvider, Login,
   ProfilePage,
 } from './components';
 import { Auth, RequireAuth } from './components/Auth';
@@ -16,6 +16,7 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/profile" element={<ProfilePage />} />
+              <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route
                 path="/searchy"
