@@ -91,7 +91,7 @@ def auth_check():
 @api.route("/login", methods=["POST"])
 def login():
     data = request.json
-    print(data)
+    # print(data)
     username = data.get("username")
     password = data.get("password")
     remember = data.get("remember", False)
@@ -220,7 +220,6 @@ def find_movies_by_recommendations(recommendations: List[Dict[str, str]]):
             res.append(movie)
         else:
             search_result_info = single_movie_search(curr_title)
-            print(f'{search_result_info=}')
             checker = Movie.query.get(search_result_info.get('id'))
             if checker is not None:
                 res.append(checker)
@@ -247,7 +246,7 @@ def view_movie(movie_id):
         ratings = []
         texts = []
         for i in reviews:
-            print(i.__dict__)
+            # print(i.__dict__)
             users.append(i.__dict__.get("user"))
             ratings.append(i.__dict__.get("rating"))
             texts.append(i.__dict__.get("text"))
@@ -299,7 +298,7 @@ def get_recommended_movies():
     favorite_movie_titles = [movie.title for movie in current_user.favorite_movies]
     recommended = get_movie_recommendations(favorite_movie_titles)
     recommended_movies = find_movies_by_recommendations(recommended)
-    print(recommended_movies)
+    # print(recommended_movies)
     return jsonify({'data': serialize_movie_list(recommended_movies)})
 
 @api.route('/add/<int:movie_id>', methods=["POST", "GET"])

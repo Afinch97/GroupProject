@@ -2,9 +2,9 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import {
   Home, Register, Search, SearchResult, Movie, NavBar, AuthProvider, Login,
-  ProfilePage, NavBar2,
+  ProfilePage, Favorites,
 } from './components';
-import { Auth, RequireAuth } from './components/Auth';
+import { RequireAuth } from './components/Auth';
 
 function App() {
   return (
@@ -18,27 +18,9 @@ function App() {
                 element={(
                   <>
                     <NavBar />
-                    <Home />
-                  </>
-)}
-              />
-              <Route
-                path="/auth"
-                element={(
-                  <>
-                    <NavBar />
-                    <Auth />
-                  </>
-)}
-              />
-              <Route
-                path="/profile"
-                element={(
-                  <>
-                    <NavBar />
                     <ProfilePage />
                   </>
-)}
+              )}
               />
               <Route
                 path="/login"
@@ -47,7 +29,16 @@ function App() {
                     <NavBar />
                     <Login />
                   </>
-)}
+              )}
+              />
+              <Route
+                path="/favorites"
+                element={(
+                  <>
+                    <NavBar />
+                    <Favorites />
+                  </>
+              )}
               />
               <Route
                 path="/register"
@@ -56,7 +47,7 @@ function App() {
                     <NavBar />
                     <Register />
                   </>
-)}
+              )}
               />
               <Route
                 path="/searchy"
