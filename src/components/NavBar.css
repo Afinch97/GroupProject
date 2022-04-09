@@ -99,3 +99,6 @@
     .dropdown:hover .dropdown-content {
       display: block;
     }
+    .nav-item a:hover {
+      background-color: #cccaca;
+    }
