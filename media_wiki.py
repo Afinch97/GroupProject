@@ -1,12 +1,13 @@
+"""Used to interact with Wikimedia API"""
 import requests
-import json
 
 S = requests.Session()
 
 URL = "https://en.wikipedia.org/w/api.php"
 
 def get_wiki_link(title):
-    PARAMS = {
+    """Get wikipedia link for given movie title"""
+    parameters = {
         "action": "opensearch",
         "namespace": "0",
         "search": title,
@@ -14,7 +15,7 @@ def get_wiki_link(title):
         "format": "json"
     }
 
-    R = S.get(url=URL, params=PARAMS)
-    DATA = R.json()
-    link = DATA
+    response = S.get(url=URL, params=parameters)
+    response_data = response.json()
+    link = response_data
     return link

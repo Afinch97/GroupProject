@@ -15,7 +15,7 @@ from flask_login import (LoginManager, UserMixin, current_user, login_required,
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import check_password_hash, generate_password_hash
 
-import MediaWiki
+import media_wiki
 from database import db, setup_database
 from models import User, Movie, Genre
 from tastedive import get_movie_recommendations
@@ -161,7 +161,7 @@ def search():
 
     wikiLinks = []
     for i in range(len(titles)):
-        links = MediaWiki.get_wiki_link(titles[i])
+        links = media_wiki.get_wiki_link(titles[i])
         try:
             wikiLinks.append(
                 links[3][0]
@@ -197,7 +197,7 @@ def searchResult(query: str):
 
     wikiLinks = []
     for i in range(len(titles)):
-        links = MediaWiki.get_wiki_link(titles[i])
+        links = media_wiki.get_wiki_link(titles[i])
         try:
             wikiLinks.append(
                 links[3][0]
