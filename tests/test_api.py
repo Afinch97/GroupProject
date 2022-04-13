@@ -1,3 +1,4 @@
+"""A dummy docstring."""
 import json
 import pytest
 from GroupProject.app import app as prj_app
@@ -9,23 +10,27 @@ from GroupProject.app import app as prj_app
 
 @pytest.fixture()
 def app():
+    """A dummy docstring."""
     prj_app.config.update({
         'TESTING': True
     })
     yield prj_app
-    
+
 
 @pytest.fixture()
 def client(app):
+    """A dummy docstring."""
     return app.test_client()
 
 
 @pytest.fixture()
 def runner(app):
+    """A dummy docstring."""
     return app.test_cli_runner()
 
 
 def test_login_page(client):
+    """Test the login page return well."""
     resp = client.get("/")
     assert resp.status_code == 200
 
@@ -37,10 +42,11 @@ def test_login_page(client):
 #         # assert resp.status_code == 200
 
 def test_login(client):
+    """Authentication if input password wrong."""
     data = {
-            "password": "1232",
-            "remember": False,
-            "username": "b"
+                "password": "1232",
+                "remember": False,
+                "username": "b"
     }
     # password: "123"
     # remember: false
