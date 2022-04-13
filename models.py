@@ -11,7 +11,8 @@ from flask_login import UserMixin
 from werkzeug.security import check_password_hash, generate_password_hash
 
 # pylint: disable=import-error
-from database import db
+from GroupProject.database import db
+# from database import db
 
 # doc string is not pointless, cannot put inside function
 # pylint: disable=pointless-string-statement

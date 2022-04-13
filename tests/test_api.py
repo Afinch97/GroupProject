@@ -1,9 +1,10 @@
 import json
+import pytest
 from GroupProject.app import app as prj_app
 
 
 # change to your local folder name
-import pytest
+
 
 
 @pytest.fixture()
@@ -44,11 +45,8 @@ def test_login(client):
     # password: "123"
     # remember: false
     # username: "b"
-    response = client.post(
-            "/api/login",
-            data=json.dumps(data),
-            headers={"Content-Type": "application/json"},
-    )
+    response = client.post("/api/login", data=json.dumps(data),
+                           headers={"Content-Type": "application/json"},)
     assert response.status_code == 200
     # print(response.status_code)
     # print(response.text)
