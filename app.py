@@ -15,19 +15,19 @@ from werkzeug.security import generate_password_hash
 
 # pylint: disable=import-error
 
-# import media_wiki
-# from database import db, setup_database
-# from models import Genre, Movie, User
-# from tastedive import get_movie_recommendations
-# from tmdb import (get_genres, get_trending, movie_info, movie_search,
-#                   single_movie_search)
-
-import GroupProject.media_wiki
-from GroupProject.database import db, setup_database
-from GroupProject.models import Genre, Movie, User
-from GroupProject.tastedive import get_movie_recommendations
-from GroupProject.tmdb import (get_genres, get_trending, movie_info, movie_search,
+import media_wiki
+from database import db, setup_database
+from models import Genre, Movie, User
+from tastedive import get_movie_recommendations
+from tmdb import (get_genres, get_trending, movie_info, movie_search,
                   single_movie_search)
+
+# import GroupProject.media_wiki
+# from GroupProject.database import db, setup_database
+# from GroupProject.models import Genre, Movie, User
+# from GroupProject.tastedive import get_movie_recommendations
+# from GroupProject.tmdb import (get_genres, get_trending, movie_info, movie_search,
+#                   single_movie_search)
 
 load_dotenv(find_dotenv())
 
